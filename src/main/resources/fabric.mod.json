@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "fabricated-rift",
+  "version": "${version}",
+  "name": "Fabricated Rift",
+  "description": "Rift ModLoader as a FabricLoader mod.",
+  "authors": [
+    "Cat Core"
+  ],
+  "contact": {
+    "homepage": "https://legacyfabric.net/",
+    "sources": "https://github.com/Legacy-Fabric/fabric-example-mod"
+  },
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.example.ExampleMod"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12.0",
+    "minecraft": "1.13"
+  }
+}
