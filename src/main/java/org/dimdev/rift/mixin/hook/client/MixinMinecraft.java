@@ -1,5 +1,7 @@
 package org.dimdev.rift.mixin.hook.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.resources.ResourcePackInfoClient;
@@ -20,18 +22,20 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@Environment(EnvType.CLIENT)
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
-    @Shadow @Final private ResourcePackList<ResourcePackInfoClient> resourcePackRepository;
-    @Shadow @Final public Profiler profiler;
+    @Shadow(remap = true) @Final public Profiler profiler;
+
+    @Shadow(remap = true) @Final private ResourcePackList<ResourcePackInfoClient> resourcePackRepository;
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V", ordinal = 1))
-    private void onAddResourcePacks(ResourcePackList resourcePackList, IPackFinder minecraftPackFinder) {
+    private void onAddResourcePacks(ResourcePackList<ResourcePackInfoClient> resourcePackList, IPackFinder minecraftPackFinder) {
         resourcePackList.addPackFinder(minecraftPackFinder);
 
         for (ResourcePackFinderAdder resourcePackFinderAdder : RiftLoader.instance.getListeners(ResourcePackFinderAdder.class)) {
             for (IPackFinder packFinder : resourcePackFinderAdder.getResourcePackFinders()) {
-                resourcePackRepository.addPackFinder(packFinder);
+                this.resourcePackRepository.addPackFinder(packFinder);
             }
         }
     }
