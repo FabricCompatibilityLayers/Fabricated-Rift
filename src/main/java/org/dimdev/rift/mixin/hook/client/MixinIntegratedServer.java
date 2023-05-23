@@ -30,6 +30,10 @@ public abstract class MixinIntegratedServer extends MixinMinecraftServer {
         return mc.gameSettings.difficulty;
     }
 
+    /**
+     * @author Runemoro
+     * @reason Make sure everything is loaded in the right order?
+     */
     @Overwrite
     @Override
     public void loadAllWorlds(String saveName, String worldName, long seed, WorldType type, JsonElement generatorOptions) {

@@ -16,19 +16,20 @@ import java.nio.file.Path;
 
 @Mixin(VanillaPack.class)
 public class MixinVanillaPack {
-    @Shadow public static Path field_199754_a;
+    @Shadow public static Path field_14196;
 
     /**
      * @reason Give priority to resources in the Minecraft jar to avoid them
      * from being overwritten by mods.
+     * @author Runemoro, InsomniaKitten
      */
     @Overwrite
     @Nullable
-    protected InputStream func_195782_c(ResourcePackType type, ResourceLocation location) {
+    protected @org.jetbrains.annotations.Nullable InputStream method_14416(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
-        if (field_199754_a != null) {
-            Path path = field_199754_a.resolve(pathString);
+        if (field_14196 != null) {
+            Path path = field_14196.resolve(pathString);
             if (Files.exists(path)) {
                 try {
                     return Files.newInputStream(path);

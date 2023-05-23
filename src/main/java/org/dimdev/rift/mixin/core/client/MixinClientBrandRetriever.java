@@ -6,8 +6,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(ClientBrandRetriever.class)
 public class MixinClientBrandRetriever {
+    /**
+     * @author Runemoro
+     * @reason change branding
+     */
     @Overwrite
     public static String getClientModName() {
-        return "rift";
+        return "rift-on-fabric";
     }
 }

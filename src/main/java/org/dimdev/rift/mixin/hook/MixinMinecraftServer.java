@@ -17,6 +17,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import org.dimdev.rift.listener.DataPackFinderAdder;
 import org.dimdev.rift.listener.ServerTickable;
+import org.dimdev.rift.util.DimensionTypesUtils;
 import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -48,7 +49,7 @@ public abstract class MixinMinecraftServer {
     @Shadow public abstract GameType getGameType();
     @Shadow public abstract boolean canStructuresSpawn();
     @Shadow public abstract boolean isHardcore();
-    @Shadow public abstract void func_195560_a(File p_195560_1_, WorldInfo p_195560_2_);
+    @Shadow public abstract void method_3800(File p_195560_1_, WorldInfo p_195560_2_);
     @Shadow public abstract void initialWorldChunkLoad();
     @Shadow public abstract void setDifficultyForAllWorlds(EnumDifficulty p_setDifficultyForAllWorlds_1_);
     @Shadow public abstract CustomBossEvents getCustomBossEvents();
@@ -61,7 +62,7 @@ public abstract class MixinMinecraftServer {
     private Map<DimensionType, Integer> dimensionTypeToWorldIndex = new HashMap<>();
     private Map<Integer, Integer> dimensionIdToWorldIndex = new HashMap<>();
 
-    @Inject(method = "func_195560_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V", shift = At.Shift.AFTER))
+    @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V", shift = At.Shift.AFTER))
     private void afterAddVanillaPackFinder(File serverDirectory, WorldInfo worldInfo, CallbackInfo ci) {
         for (DataPackFinderAdder resourcePackFinderAdder : RiftLoader.instance.getListeners(DataPackFinderAdder.class)) {
             for (IPackFinder packFinder : resourcePackFinderAdder.getDataPackFinders()) {
@@ -81,6 +82,10 @@ public abstract class MixinMinecraftServer {
         profiler.endSection();
     }
 
+    /**
+     * @author Runemoro
+     * @reason Needed to handle custom dimensions.
+     */
     @Overwrite
     public void loadAllWorlds(String saveName, String worldName, long seed, WorldType type, JsonElement generatorOptions) {
         convertMapIfNeeded(saveName);
@@ -98,7 +103,7 @@ public abstract class MixinMinecraftServer {
             worldInfo.setWorldName(worldName);
         }
 
-        func_195560_a(saveHandler.getWorldDirectory(), worldInfo);
+        method_3800(saveHandler.getWorldDirectory(), worldInfo);
 
         // Create overworld
         WorldServer overworld = isDemo() ? new WorldServerDemo((MinecraftServer) (Object) this, saveHandler, worldInfo, 0, profiler)
@@ -114,20 +119,11 @@ public abstract class MixinMinecraftServer {
         List<WorldServer> worldList = new ArrayList<>();
         worldList.add(overworld);
         dimensionIdToWorldIndex.put(0, 0);
-        dimensionTypeToWorldIndex.put(DimensionType.OVERWORLD, 0);
+        dimensionTypeToWorldIndex.put(DimensionType.field_13072, 0);
 
         // Create other worlds
-        List<DimensionType> dimensionTypes;
-        try {
-            @SuppressWarnings("JavaReflectionMemberAccess")
-            Field dimensionTypesField = DimensionType.class.getDeclaredField("dimensionTypes");
-            dimensionTypesField.setAccessible(true);
-            //noinspection unchecked
-            dimensionTypes = new ArrayList<>(((Map<Integer, DimensionType>) dimensionTypesField.get(null)).values());
-            dimensionTypes.remove(DimensionType.OVERWORLD);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
+        List<DimensionType> dimensionTypes = new ArrayList<>(DimensionTypesUtils.dimensionTypes.values());
+        dimensionTypes.remove(DimensionType.field_13072);
 
         for (DimensionType dimensionType : dimensionTypes) {
             dimensionIdToWorldIndex.put(dimensionType.getId(), worldList.size());
@@ -164,7 +160,7 @@ public abstract class MixinMinecraftServer {
                 return WorldServerDemo.DEMO_WORLD_SETTINGS;
             } else {
                 WorldSettings worldSettings = new WorldSettings(seed, getGameType(), canStructuresSpawn(), isHardcore(), worldType);
-                worldSettings.func_205390_a(generatorOptions);
+                worldSettings.method_8579(generatorOptions);
                 if (enableBonusChest) {
                     worldSettings.enableBonusChest();
                 }
@@ -179,11 +175,19 @@ public abstract class MixinMinecraftServer {
         return getDifficulty();
     }
 
+    /**
+     * @author Runemoro
+     * @reason Handle additional dimensions
+     */
     @Overwrite
     public WorldServer getWorld(DimensionType dimensionType) {
         return worlds[dimensionTypeToWorldIndex.get(dimensionType)];
     }
 
+    /**
+     * @author Runemoro
+     * @reason Handle additional dimensions
+     */
     @Overwrite
     public WorldServer getWorld(int dimensionId) {
         return worlds[dimensionIdToWorldIndex.get(dimensionId)];

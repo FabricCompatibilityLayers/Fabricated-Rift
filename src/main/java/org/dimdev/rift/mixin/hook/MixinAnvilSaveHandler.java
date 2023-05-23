@@ -19,6 +19,10 @@ public class MixinAnvilSaveHandler extends SaveHandler {
         super(p_i49566_1_, p_i49566_2_, p_i49566_3_, p_i49566_4_);
     }
 
+    /**
+     * @author Runemoro, InsomniaKitten
+     * @reason Handle additional dimensions
+     */
     @Overwrite
     @Override
     public IChunkLoader getChunkLoader(Dimension dimension) {

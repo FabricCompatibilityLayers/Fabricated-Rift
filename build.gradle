@@ -33,6 +33,14 @@ repositories {
 			mavenPom()
 		}
 	}
+
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
 }
 
 unimined {
@@ -40,7 +48,9 @@ unimined {
 }
 
 minecraft {
-	legacyFabric()
+	legacyFabric {
+		accessWidener = file("src/main/resources/fabricated-rift.accesswidener")
+	}
 
 	mcRemapper.tinyRemapperConf = {
 		// most mcp mappings (except older format) dont include field desc
@@ -60,6 +70,8 @@ dependencies {
 //mappings "net.legacyfabric.v2:yarn:${project.yarn_mappings}:v2"
 
 	fabric "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	modImplementation("maven.modrinth:mod-remapping-api:${project.mod_remapping_api}")
 }
 
 processResources {

@@ -24,6 +24,10 @@ public abstract class MixinTileEntityType {
     @Shadow @Final private static Logger LOGGER;
     @Shadow @Final public static RegistryNamespaced<ResourceLocation, TileEntityType<?>> REGISTRY;
 
+    /**
+     * @author Runemoro, InsomniaKitten
+     * @reason Not throwing?
+     */
     @Overwrite
     public static <T extends TileEntity> TileEntityType<T> registerTileEntityType(String id, TileEntityType.Builder<T> builder) {
         Type dataFixerType = null;
