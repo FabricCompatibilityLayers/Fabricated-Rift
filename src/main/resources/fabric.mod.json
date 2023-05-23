@@ -15,6 +15,9 @@
   "icon": "assets/modid/icon.png",
   "environment": "*",
   "entrypoints": {
+    "mod-remapper-api:modremapper": [
+      "fr.catcore.fabricatedrift.FabricatedRift"
+    ]
   },
   "mixins": [
     "mixins.rift.core.json",

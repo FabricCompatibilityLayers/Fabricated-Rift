@@ -101,6 +101,9 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archivesBaseName}" }
 	}
+	from("./libs") {
+		into("libs")
+	}
 }
 
 // configure the maven publication
