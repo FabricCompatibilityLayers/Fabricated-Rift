@@ -17,7 +17,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import org.dimdev.rift.listener.DataPackFinderAdder;
 import org.dimdev.rift.listener.ServerTickable;
-import org.dimdev.rift.util.DimensionTypesUtils;
+import fr.catcore.fabricatedrift.DimensionTypesUtils;
 import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

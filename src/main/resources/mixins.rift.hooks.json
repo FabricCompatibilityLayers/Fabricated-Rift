@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_8",
   "target": "@env(DEFAULT)",
   "package": "org.dimdev.rift.mixin.hook",
-  "refmap": "mixins.rift.refmap.json",
   "mixins": [
     "MixinBlock",
     "MixinItem",

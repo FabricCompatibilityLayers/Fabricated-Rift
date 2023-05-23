@@ -1,4 +1,4 @@
-package org.dimdev.rift.util;
+package fr.catcore.fabricatedrift;
 
 import net.minecraft.world.dimension.DimensionType;
 
