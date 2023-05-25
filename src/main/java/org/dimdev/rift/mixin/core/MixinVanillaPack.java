@@ -1,61 +1,52 @@
 package org.dimdev.rift.mixin.core;
 
-import net.minecraft.resources.FolderPack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.VanillaPack;
 import net.minecraft.util.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 
-import java.io.File;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.Enumeration;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 @Mixin(VanillaPack.class)
 public class MixinVanillaPack {
+    @Shadow public static Path field_14196;
+
     /**
      * @reason Give priority to resources in the Minecraft jar to avoid them
      * from being overwritten by mods.
-     * @author Runemoro, InsomniaKitten, Cat Core
+     * @author Runemoro, InsomniaKitten
      */
-    @Inject(method = "method_14416", at = @At("HEAD"), cancellable = true)
-    private void findInputStream(ResourcePackType resourceType, ResourceLocation identifier, CallbackInfoReturnable<InputStream> callback) {
-        if (VanillaPack.field_14196 != null) {
-            // Fall through to Vanilla logic, they have a special case here.
-            return;
-        }
+    @Overwrite
+    @Nullable
+    protected @org.jetbrains.annotations.Nullable InputStream method_14416(ResourcePackType type, ResourceLocation location) {
+        String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
-        String path = resourceType.getDirectoryName() + "/" + identifier.getNamespace() + "/" + identifier.getPath();
-        URL found = null;
-
-        try {
-            Enumeration<URL> candidates = VanillaPack.class.getClassLoader().getResources(path);
-
-            // Get the last element
-            while (candidates.hasMoreElements()) {
-                found = candidates.nextElement();
+        if (field_14196 != null) {
+            Path path = field_14196.resolve(pathString);
+            if (Files.exists(path)) {
+                try {
+                    return Files.newInputStream(path);
+                } catch (IOException ignored) {}
             }
-
-            if (found == null || !FolderPack.method_14402(new File(found.getFile()), "/" + path)) {
-                // Mimics vanilla behavior
-
-                callback.setReturnValue(null);
-                return;
-            }
-        } catch (IOException var6) {
-            // Default path
         }
 
         try {
-            if (found != null) {
-                callback.setReturnValue(found.openStream());
-            }
-        } catch (Exception e) {
-            // Default path
-        }
+            URL rootMarker = VanillaPack.class.getResource("/" + type.getDirectoryName() + "/.mcassetsroot");
+            String root = rootMarker.toString().substring(0, rootMarker.toString().length() - ".mcassetsroot".length());
+            String path = location.getNamespace() + "/" + location.getPath();
+            return new URL(root + path).openStream();
+        } catch (IOException ignored) {}
+
+        // Realms and Optifine just add resources to the classpath. If no resources were
+        // found in the Minecraft jar, fall back to looking on the classpath. Duplicates
+        // will be handled by the classpath order.
+        return VanillaPack.class.getResourceAsStream("/" + type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath());
     }
 }

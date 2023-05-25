@@ -5,7 +5,6 @@ import fr.catcore.modremapperapi.ClassTransformer;
 import fr.catcore.modremapperapi.utils.Constants;
 import net.fabricmc.loader.api.FabricLoader;
 //import net.minecraft.launchwrapper.Launch;
-import net.fabricmc.loader.impl.launch.FabricLauncherBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.accesstransform.AccessTransformationSet;
@@ -24,7 +23,6 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -202,11 +200,6 @@ public class RiftLoader {
     private static void addURLToClasspath(URL url) {
         ReflectionUtils.addURLToClasspath(url);
 //        Launch.classLoader.addURL(url);
-        try {
-            FabricLauncherBase.getLauncher().addToClassPath(new File(url.toURI()).toPath());
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void initAccessTransformer() {
