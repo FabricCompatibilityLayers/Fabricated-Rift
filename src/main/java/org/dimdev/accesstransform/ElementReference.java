@@ -28,17 +28,17 @@ public class ElementReference {
 
         switch (split[0]) {
             case "class": {
-                return new ElementReference(Kind.CLASS, null, RemapUtils.remapClass(split[1]), null);
+                return new ElementReference(Kind.CLASS, null, RemapUtils.remapClass(split[1]).replace("/", "."), null);
             }
 
             case "method": {
                 split = RemapUtils.remapMethod(split[1], split[2], split[3]);
-                return new ElementReference(Kind.METHOD, split[0], split[1], split[2]);
+                return new ElementReference(Kind.METHOD, split[0].replace("/", "."), split[1], split[2]);
             }
 
             case "field": {
                 split = RemapUtils.remapField(split[1], split[2], split[3]);
-                return new ElementReference(Kind.FIELD, split[0], split[1], split[2]);
+                return new ElementReference(Kind.FIELD, split[0].replace("/", "."), split[1], split[2]);
             }
 
             default: {

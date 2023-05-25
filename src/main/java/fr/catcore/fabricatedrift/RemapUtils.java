@@ -30,8 +30,7 @@ public class RemapUtils {
         for(ClassDef def : FabricLauncherBase.getLauncher().getMappingConfiguration().getMappings().getClasses()) {
             if (def.getName(getNativeNamespace()).equals(owner)) {
                 for (FieldDef fieldDef : def.getFields()) {
-                    if (fieldDef.getName(getNativeNamespace()).equals(fieldName)
-                            && fieldDef.getDescriptor(getNativeNamespace()).equals(desc)) {
+                    if (fieldDef.getName(getNativeNamespace()).equals(fieldName)) {
                         return new String[]{
                                 def.getName(resolver.getCurrentRuntimeNamespace()),
                                 fieldDef.getName(resolver.getCurrentRuntimeNamespace()),
