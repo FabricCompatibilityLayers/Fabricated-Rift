@@ -69,9 +69,10 @@ public class RiftLoader {
         // Load classpath mods
         log.info("Searching mods on classpath");
         try {
-            Enumeration<URL> urls = ClassLoader.getSystemResources("riftmod.json");
+            Enumeration<URL> urls = this.getClass().getClassLoader().getResources("riftmod.json");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
+                if (url.toString().contains("mod-remapping-api")) continue;
                 InputStream in = url.openStream();
 
                 // Convert jar utls to file urls (from JarUrlConnection.parseSpecs)
@@ -166,6 +167,7 @@ public class RiftLoader {
         log.info("Initializing mods");
         // Load all the mod jars
         for (ModInfo modInfo : modInfoMap.values()) {
+            if (Objects.equals(modInfo.id, "rift")) continue;
             try {
                 addURLToClasspath(modInfo.source.toURI().toURL());
             } catch (MalformedURLException e) {
