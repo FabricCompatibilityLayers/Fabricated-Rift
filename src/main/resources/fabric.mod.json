@@ -25,6 +25,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.14.19",
+    "mod-remapping-api": ">=1.9.0",
     "minecraft": "1.13"
   }
 }
