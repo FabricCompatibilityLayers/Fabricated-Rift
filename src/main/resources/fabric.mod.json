@@ -17,6 +17,9 @@
   "entrypoints": {
     "mod-remapper-api:modremapper": [
       "fr.catcore.fabricatedrift.FabricatedRift"
+    ],
+    "preLaunch": [
+      "fr.catcore.fabricatedrift.FabricatedRiftPreLaunch"
     ]
   },
   "mixins": [

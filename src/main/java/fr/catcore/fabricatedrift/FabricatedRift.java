@@ -48,14 +48,4 @@ public class FabricatedRift implements ModRemapper {
     public Optional<String> getDefaultPackage() {
         return Optional.of("net/minecraft/");
     }
-
-    @Override
-    public void afterRemap() {
-        try {
-            Class<?> clazz = Class.forName("org.dimdev.riftloader.RiftLoader");
-            clazz.getMethod("load", boolean.class).invoke(clazz.getField("instance").get(null), FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT);
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }
