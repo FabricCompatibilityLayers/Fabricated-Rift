@@ -1,10 +1,15 @@
 package org.dimdev.riftloader;
 
-import net.minecraft.launchwrapper.IClassTransformer;
+import fr.catcore.modremapperapi.api.IClassTransformer;
 
 public class RiftAccessTransformer implements IClassTransformer {
     @Override
-    public byte[] transform(String name, String transformedName, byte[] basicClass) {
+    public boolean handlesClass(String s, String s1) {
+        return s.startsWith("net.minecraft");
+    }
+
+    @Override
+    public byte[] transformClass(String name, String transformedName, byte[] basicClass) {
         return RiftLoader.instance.accessTransformer.transformClass(name, basicClass);
     }
 }
