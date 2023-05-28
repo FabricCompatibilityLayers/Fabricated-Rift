@@ -4,9 +4,6 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
@@ -43,6 +40,13 @@ repositories {
 	}
 }
 
+sourceSets {
+	main
+	debug {
+		compileClasspath += main.compileClasspath
+	}
+}
+
 unimined {
 	useGlobalCache = false
 }
@@ -74,6 +78,10 @@ dependencies {
 	modImplementation("maven.modrinth:mod-remapping-api:${project.mod_remapping_api}")
 }
 
+base {
+	archivesName = project.archives_base_name
+}
+
 processResources {
 	inputs.property "version", project.version
 
@@ -88,6 +96,9 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
 	if (JavaVersion.current().isJava9Compatible()) it.options.release = 8
+
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 java {
@@ -99,7 +110,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}" }
+		rename { "${it}_${base.archivesName.get()}" }
 	}
 	from("./libs") {
 		into("libs")
@@ -121,51 +132,6 @@ publishing {
 	}
 }
 
-
-// buildscript {
-//     repositories {
-//         jcenter()
-//         maven { url 'https://www.dimdev.org/maven/' }
-//         maven { url 'http://repo.spongepowered.org/maven' }
-//         maven { url 'https://plugins.gradle.org/m2/' }
-//     }
-//     dependencies {
-//         classpath 'org.dimdev:ForgeGradle:2.3-SNAPSHOT'
-//         classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
-//         classpath 'gradle.plugin.com.github.breadmoirai:github-release:2.0.1'
-//     }
-// }
-
-// apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-// apply plugin: 'java'
-// apply plugin: 'org.spongepowered.mixin'
-// apply plugin: 'maven-publish'
-// apply plugin: 'com.github.breadmoirai.github-release'
-
-// def travisBuildNumber = System.getenv('TRAVIS_BUILD_NUMBER')
-// def versionSuffix = travisBuildNumber != null ? travisBuildNumber : 'SNAPSHOT'
-
-// group 'org.dimdev'
-// version '1.0.4-' + versionSuffix
-// archivesBaseName = 'Rift'
-
-// sourceCompatibility = 1.8
-// targetCompatibility = 1.8
-
-// repositories {
-//     mavenCentral()
-//     maven { url 'https://libraries.minecraft.net/' }
-//     maven { url 'https://www.dimdev.org/maven/' }
-//     maven { url = 'https://repo.spongepowered.org/maven/' }
-// }
-
-// dependencies {
-//     implementation('org.dimdev:mixin:0.7.11-SNAPSHOT') { transitive = false }
-//     implementation('net.minecraft:launchwrapper:1.12') { transitive = false }
-//     implementation 'org.ow2.asm:asm:6.2'
-//     implementation 'org.ow2.asm:asm-commons:6.2'
-// }
-
 // minecraft {
 //     version = '1.13'
 //     mappings = 'snapshot_20180908'
@@ -173,84 +139,4 @@ publishing {
 //     tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
 //     makeObfSourceJar = false
 
-//     replace "@VERSION@", project.version
-//     replaceIn "org/dimdev/riftloader/Main.java"
-// }
-
-// mixin {
-//     defaultObfuscationEnv notch
-//     add sourceSets.main, 'mixins.rift.refmap.json'
-// }
-
-// sourceSets {
-//     main
-//     debug {
-//         compileClasspath += main.compileClasspath
-//     }
-// }
-
-// processResources {
-//     filesMatching('profile.json') {
-//         expand 'version': project.version
-//     }
-
-//     // Re-run this task when these change
-//     inputs.property "version", project.version
-//     inputs.property "mcversion", project.minecraft.version
-// }
-
-// jar {
-//     finalizedBy reobfJar
-//     manifest.attributes(
-//             'Main-Class': 'org.dimdev.riftloader.Main'
-//     )
-// }
-
-// task devJar(type: Jar, dependsOn: classes) {
-//     classifier 'dev'
-//     from sourceSets.main.output
-// }
-
-// task sourcesJar(type: Jar, dependsOn: classes) {
-//     classifier 'sources'
-//     from sourceSets.main.allSource
-// }
-
-// artifacts {
-//     archives jar
-//     archives devJar
-//     archives sourcesJar
-// }
-
-// publishing {
-//     repositories {
-//         maven { url "$buildDir/repo/" }
-//         maven {
-//             url 'sftp://www.dimdev.org:22/data/www/html/maven/'
-//             credentials {
-//                 username 'www'
-//                 password System.getenv('dimdev_maven_password')
-//             }
-//         }
-//     }
-
-//     publications {
-//         mavenJava(MavenPublication) {
-//             artifactId = 'rift'
-
-//             from components.java
-//             artifact devJar
-//             artifact sourcesJar
-//         }
-//     }
-// }
-
-// tasks.publish.dependsOn(tasks.githubRelease)
-// githubRelease {
-//     token = System.getenv('dimdev_repo_token')
-//     owner = 'DimensionalDevelopment'
-//     repo = 'Rift'
-//     targetCommitish = 'master'
-//     prerelease = true
-//     releaseAssets = jar.destinationDir.listFiles()
 // }
