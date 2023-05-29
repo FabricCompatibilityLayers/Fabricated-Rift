@@ -40,6 +40,7 @@ public class MixinNetHandlerPlayClient {
     @Shadow private CommandDispatcher<ISuggestionProvider> commandDispatcher;
     @Shadow @Final private ClientSuggestionProvider clientSuggestionProvider;
     @Shadow private NetworkTagManager networkTagManager;
+    @Final
     @Shadow private NBTQueryManager nbtQueryManager;
 
     @Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)

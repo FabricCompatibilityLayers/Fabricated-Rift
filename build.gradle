@@ -40,12 +40,12 @@ repositories {
 	}
 }
 
-sourceSets {
-	main
-	debug {
-		compileClasspath += main.compileClasspath
-	}
-}
+//sourceSets {
+//	main
+//	debug {
+//		compileClasspath += main.compileClasspath
+//	}
+//}
 
 unimined {
 	useGlobalCache = false

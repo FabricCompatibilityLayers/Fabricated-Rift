@@ -25,11 +25,15 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(BlockFluidRenderer.class)
 public abstract class MixinBlockFluidRenderer {
     @Shadow private static boolean isAdjacentFluidSameAs(IBlockReader world, BlockPos pos, EnumFacing side, IFluidState state) { return false; }
-    @Shadow private static boolean func_209556_a(IBlockReader world, BlockPos pos, EnumFacing side, float height) { return false; }
+    @Shadow private static boolean method_3344(IBlockReader world, BlockPos pos, EnumFacing side, float height) { return false; }
     @Shadow protected abstract float getFluidHeight(IWorldReaderBase world, BlockPos pos, Fluid fluid);
     @Shadow protected abstract int getCombinedLightUpMax(IWorldReader world, BlockPos pos);
     @Shadow private TextureAtlasSprite atlasSpriteWaterOverlay;
 
+    /**
+     * @author Runemoro, Chocohead
+     * @reason add rendering hooks?
+     */
     @Overwrite
     public boolean render(IWorldReader world, BlockPos pos, BufferBuilder buffer, IFluidState state) {
         boolean isLava = state.isTagged(FluidTags.LAVA);
@@ -49,12 +53,12 @@ public abstract class MixinBlockFluidRenderer {
         float greenMultiplier = (colorMultiplier >> 8 & 255) / 255F;
         float blueMultiplier = (colorMultiplier & 255) / 255F;
 
-        boolean renderTop = !isAdjacentFluidSameAs(world, pos, EnumFacing.UP, state);
-        boolean renderBottom = !isAdjacentFluidSameAs(world, pos, EnumFacing.DOWN, state) && !func_209556_a(world, pos, EnumFacing.DOWN, 0.8888889F);
-        boolean renderNorth = !isAdjacentFluidSameAs(world, pos, EnumFacing.NORTH, state);
-        boolean renderSouth = !isAdjacentFluidSameAs(world, pos, EnumFacing.SOUTH, state);
-        boolean renderWest = !isAdjacentFluidSameAs(world, pos, EnumFacing.WEST, state);
-        boolean renderEast = !isAdjacentFluidSameAs(world, pos, EnumFacing.EAST, state);
+        boolean renderTop = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11036, state);
+        boolean renderBottom = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11033, state) && !method_3344(world, pos, EnumFacing.field_11033, 0.8888889F);
+        boolean renderNorth = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11043, state);
+        boolean renderSouth = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11035, state);
+        boolean renderWest = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11039, state);
+        boolean renderEast = !isAdjacentFluidSameAs(world, pos, EnumFacing.field_11034, state);
 
         if (!renderTop && !renderBottom && !renderEast && !renderWest && !renderNorth && !renderSouth) {
             return false;
@@ -77,7 +81,7 @@ public abstract class MixinBlockFluidRenderer {
         float maxV;
         float var34;
 
-        if (renderTop && !func_209556_a(world, pos, EnumFacing.UP, Math.min(Math.min(var17, var18), Math.min(var19, var20)))) {
+        if (renderTop && !method_3344(world, pos, EnumFacing.field_11036, Math.min(Math.min(var17, var18), Math.min(var19, var20)))) {
             rendered = true;
             var17 -= 0.001F;
             var18 -= 0.001F;
@@ -165,7 +169,7 @@ public abstract class MixinBlockFluidRenderer {
                 x2 = x + 1;
                 z1 = z + 0.001;
                 z2 = z + 0.001;
-                side = EnumFacing.NORTH;
+                side = EnumFacing.field_11043;
                 render = renderNorth;
             } else if (direction == 1) {
                 maxU = var19;
@@ -174,7 +178,7 @@ public abstract class MixinBlockFluidRenderer {
                 x2 = x;
                 z1 = z + 1 - 0.001;
                 z2 = z + 1 - 0.001;
-                side = EnumFacing.SOUTH;
+                side = EnumFacing.field_11035;
                 render = renderSouth;
             } else if (direction == 2) {
                 maxU = var18;
@@ -183,7 +187,7 @@ public abstract class MixinBlockFluidRenderer {
                 x2 = x + 0.001;
                 z1 = z + 1;
                 z2 = z;
-                side = EnumFacing.WEST;
+                side = EnumFacing.field_11039;
                 render = renderWest;
             } else {
                 maxU = var20;
@@ -192,11 +196,11 @@ public abstract class MixinBlockFluidRenderer {
                 x2 = x + 1 - 0.001;
                 z1 = z;
                 z2 = z + 1;
-                side = EnumFacing.EAST;
+                side = EnumFacing.field_11034;
                 render = renderEast;
             }
 
-            if (render && !func_209556_a(world, pos, side, Math.max(maxU, minV))) {
+            if (render && !method_3344(world, pos, side, Math.max(maxU, minV))) {
                 rendered = true;
                 BlockPos var55 = pos.offset(side);
                 TextureAtlasSprite texture = flowingTexture;

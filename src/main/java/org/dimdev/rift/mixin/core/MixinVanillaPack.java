@@ -21,10 +21,11 @@ public class MixinVanillaPack {
     /**
      * @reason Give priority to resources in the Minecraft jar to avoid them
      * from being overwritten by mods.
+     * @author Runemoro, InsomniaKitten, Chocohead
      */
     @Overwrite
     @Nullable
-    protected InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
+    protected @org.jetbrains.annotations.Nullable InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
         if (basePath != null) {
