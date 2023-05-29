@@ -1,0 +1,36 @@
+accessWidener   v2  mcp
+
+#accessible method net/minecraft/block/Block register (Ljava/lang/String;Lnet/minecraft/block/Block;)V
+#accessible method net/minecraft/block/Block register (Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/block/Block;)V
+#accessible method net/minecraft/block/Block$Builder sound (Lnet/minecraft/block/SoundType;)Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/block/Block$Builder lightValue (I)Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/block/Block$Builder zeroHardnessAndResistance ()Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/block/Block$Builder hardnessAndResistance (F)Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/block/Block$Builder needsRandomTick ()Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/block/Block$Builder variableOpacity ()Lnet/minecraft/block/Block$Builder;
+#accessible method net/minecraft/item/Item register (Lnet/minecraft/block/Block;)V
+#accessible method net/minecraft/item/Item register (Lnet/minecraft/block/Block;Lnet/minecraft/item/ItemGroup;)V
+#accessible method net/minecraft/item/Item register (Lnet/minecraft/item/ItemBlock;)V
+#accessible method net/minecraft/item/Item register (Lnet/minecraft/block/Block;Lnet/minecraft/item/Item;)V
+#accessible method net/minecraft/item/Item registerItem (Ljava/lang/String;Lnet/minecraft/item/Item;)V
+#accessible method net/minecraft/item/Item register (Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/item/Item;)V
+#accessible method net/minecraft/fluid/Fluid register (Ljava/lang/String;Lnet/minecraft/fluid/Fluid;)V
+#accessible method net/minecraft/fluid/Fluid register (Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/fluid/Fluid;)V
+#accessible method net/minecraft/world/dimension/DimensionType <init> (ILjava/lang/String;Ljava/lang/String;Ljava/util/function/Supplier;)V
+#accessible method net/minecraft/world/dimension/DimensionType register (Ljava/lang/String;Lnet/minecraft/world/dimension/DimensionType;)Lnet/minecraft/world/dimension/DimensionType;
+#accessible method net/minecraft/world/biome/Biome registerBiome (ILjava/lang/String;Lnet/minecraft/world/biome/Biome;)V
+#accessible method net/minecraft/particles/ParticleType <init> (Lnet/minecraft/util/ResourceLocation;ZLnet/minecraft/particles/IParticleData$IDeserializer;)V
+#accessible method net/minecraft/particles/ParticleType register (Ljava/lang/String;Z)V
+#accessible method net/minecraft/particles/ParticleType register (Ljava/lang/String;ZLnet/minecraft/particles/IParticleData$IDeserializer;)V
+#accessible method net/minecraft/particles/BasicParticleType <init> (Lnet/minecraft/util/ResourceLocation;Z)V
+#accessible method net/minecraft/enchantment/Enchantment registerEnchantment (Ljava/lang/String;Lnet/minecraft/enchantment/Enchantment;)V
+#accessible method net/minecraft/potion/Potion register (ILjava/lang/String;Lnet/minecraft/potion/Potion;)V
+#accessible method net/minecraft/block/BlockFlowingFluid <init> (Lnet/minecraft/fluid/FlowingFluid;Lnet/minecraft/block/Block$Builder;)V
+#accessible method net/minecraft/util/SoundEvent registerSound (Ljava/lang/String;)V
+#accessible method net/minecraft/world/WorldType <init> (ILjava/lang/String;)V
+#accessible method net/minecraft/world/WorldType <init> (ILjava/lang/String;I)V
+#accessible method net/minecraft/world/WorldType <init> (ILjava/lang/String;Ljava/lang/String;I)V
+#accessible class net/minecraft/world/gen/IChunkGeneratorFactory
+#accessible method net/minecraft/world/gen/feature/structure/StructureIO registerStructure (Ljava/lang/Class;Ljava/lang/String;)V
+#accessible method net/minecraft/world/gen/feature/structure/StructureIO registerStructureComponent (Ljava/lang/Class;Ljava/lang/String;)V
+#accessible field net/minecraft/item/ArmorMaterial MAX_DAMAGE_ARRAY [I

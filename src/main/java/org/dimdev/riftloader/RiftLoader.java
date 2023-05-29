@@ -1,7 +1,9 @@
 package org.dimdev.riftloader;
 
 import com.google.gson.JsonParseException;
-import net.minecraft.launchwrapper.Launch;
+import fr.catcore.modremapperapi.ClassTransformer;
+import fr.catcore.modremapperapi.utils.Constants;
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.accesstransform.AccessTransformationSet;
@@ -30,8 +32,8 @@ public class RiftLoader {
     public static final RiftLoader instance = new RiftLoader();
     private static final Logger log = LogManager.getLogger("RiftLoader");
 
-    public final File modsDir = new File(Launch.minecraftHome, "mods");
-    public final File configDir = new File(Launch.minecraftHome, "config");
+    public final File modsDir = new File(Constants.VERSIONED_FOLDER, "mods");
+    public final File configDir = FabricLoader.getInstance().getConfigDir().toFile();
     private Side side;
     private boolean loaded;
 
@@ -65,9 +67,10 @@ public class RiftLoader {
         // Load classpath mods
         log.info("Searching mods on classpath");
         try {
-            Enumeration<URL> urls = ClassLoader.getSystemResources("riftmod.json");
+            Enumeration<URL> urls = this.getClass().getClassLoader().getResources("riftmod.json");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
+                if (url.toString().contains("mod-remapping-api")) continue;
                 InputStream in = url.openStream();
 
                 // Convert jar utls to file urls (from JarUrlConnection.parseSpecs)
@@ -163,6 +166,7 @@ public class RiftLoader {
         log.info("Initializing mods");
         // Load all the mod jars
         for (ModInfo modInfo : modInfoMap.values()) {
+            if (Objects.equals(modInfo.id, "rift")) continue;
             try {
                 addURLToClasspath(modInfo.source.toURI().toURL());
             } catch (MalformedURLException e) {
@@ -185,7 +189,7 @@ public class RiftLoader {
         for (Listener listener : allListeners) {
         	Class<?> listenerClass;
             try {
-                listenerClass = Launch.classLoader.findClass(listener.className);
+                listenerClass = Class.forName(listener.className, false, RiftLoader.class.getClassLoader());
                 listenerClasses.add(listenerClass);
             } catch (ReflectiveOperationException e) {
                 throw new RuntimeException("Failed to find listener class " + listener.className, e);
@@ -201,14 +205,13 @@ public class RiftLoader {
 
     private static void addURLToClasspath(URL url) {
         ReflectionUtils.addURLToClasspath(url);
-        Launch.classLoader.addURL(url);
     }
 
     private void initAccessTransformer() {
         try {
             AccessTransformationSet transformations = new AccessTransformationSet();
 
-            Enumeration<URL> urls = Launch.classLoader.getResources("access_transformations.at");
+            Enumeration<URL> urls = RiftLoader.class.getClassLoader().getResources("access_transformations.at");
             while (urls.hasMoreElements()) {
                 URL url = urls.nextElement();
                 try (Scanner scanner = new Scanner(url.openStream())) {
@@ -219,7 +222,7 @@ public class RiftLoader {
             }
 
             accessTransformer = new AccessTransformer(transformations);
-            Launch.classLoader.registerTransformer("org.dimdev.riftloader.RiftAccessTransformer");
+            ClassTransformer.registerTransformer(new RiftAccessTransformer());
         } catch (Throwable t) {
             throw new RuntimeException("Failed to initialize access transformers", t);
         }

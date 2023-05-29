@@ -1,16 +1,11 @@
 package org.dimdev.rift;
 
-import java.io.IOException;
-
+import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.riftloader.listener.InitializationListener;
-import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.asm.mixin.Mixins;
 import org.spongepowered.asm.mixin.extensibility.IEnvironmentTokenProvider;
-
-import net.minecraft.launchwrapper.Launch;
 
 public class Rift implements InitializationListener {
 	public static final int DATAFIXER_VERSION = 1631;
@@ -20,9 +15,6 @@ public class Rift implements InitializationListener {
     public void onInitialization() {
         LOGGER.info("Loading Rift!");
 
-        MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.rift.core.json");
-        Mixins.addConfiguration("mixins.rift.hooks.json");
         MixinEnvironment.getDefaultEnvironment().registerTokenProviderClass("org.dimdev.rift.Rift$RiftTokens");
     }
 
@@ -33,11 +25,7 @@ public class Rift implements InitializationListener {
     	public static boolean hasOptifine = false;
 
     	private static boolean isObf() {
-    		try {
-    			return Launch.classLoader.getClassBytes("net.minecraft.world.World") == null;
-    		} catch (IOException e) {
-    			return true; //We probably are if we can't find World
-    		}
+    		return FabricLoader.getInstance().isDevelopmentEnvironment();
     	}
 
 		@Override

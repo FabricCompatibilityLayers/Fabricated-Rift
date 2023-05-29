@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,7 +25,7 @@ public class MappingBlob implements Serializable {
 	}
 
 	public void write(File out) {
-		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(out))) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(Files.newOutputStream(out.toPath()))) {
 			oos.writeObject(this);
 		} catch (IOException e) {
 			throw new RuntimeException("Error serialising mapping blob", e);
@@ -32,7 +33,7 @@ public class MappingBlob implements Serializable {
 	}
 
 	public static MappingBlob read(File file) {
-		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+		try (ObjectInputStream ois = new ObjectInputStream(Files.newInputStream(file.toPath()))) {
 			return (MappingBlob) ois.readObject();
 		} catch (IOException e) {
 			throw new RuntimeException("Error deserialising mapping blob", e);
