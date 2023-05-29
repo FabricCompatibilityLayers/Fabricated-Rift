@@ -47,7 +47,7 @@ public class MixinMinecraft {
         profiler.endSection();
     }
 
-    @Inject(method = "getAmbientMusicType", at = @At(value = "INVOKE"), cancellable = true)
+    @Inject(method = "getAmbientMusicType", at = @At(value = "RETURN"), cancellable = true)
     private void getMusicType(CallbackInfoReturnable<MusicTicker.MusicType> cir) {
         for (AmbientMusicTypeProvider ambientMusicTypeProvider : RiftLoader.instance.getListeners(AmbientMusicTypeProvider.class)) {
             MusicTicker.MusicType type = ambientMusicTypeProvider.getAmbientMusicType((Minecraft) (Object) this);

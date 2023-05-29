@@ -24,6 +24,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinTileEntityType {
     @Shadow @Final private static Logger LOGGER;
 
+    /**
+     * @author Runemoro, InsomniaKitten, Chocohead
+     * @reason Not throwing?
+     */
     @Overwrite
     public static <T extends TileEntity> TileEntityType<T> register(String id, TileEntityType.Builder<T> builder) {
         Type<?> dataFixerType = null;

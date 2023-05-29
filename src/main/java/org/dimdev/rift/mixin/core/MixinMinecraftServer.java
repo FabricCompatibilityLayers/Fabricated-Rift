@@ -6,8 +6,12 @@ import org.spongepowered.asm.mixin.Overwrite;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
+    /**
+     * @author Runemoro
+     * @reason change branding
+     */
     @Overwrite
     public String getServerModName() {
-        return "rift";
+        return "rift-on-fabric";
     }
 }

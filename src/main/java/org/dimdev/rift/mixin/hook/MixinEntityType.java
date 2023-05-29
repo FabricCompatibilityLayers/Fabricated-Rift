@@ -36,6 +36,10 @@ public abstract class MixinEntityType {
         @Shadow private boolean summonable;
         private static final Logger LOGGER = LogManager.getLogger();
 
+        /**
+         * @author Runemoro, Chocohead
+         * @reason make it not throw?
+         */
         @Overwrite
         public EntityType<T> build(String id) {
             Type<?> dataFixerType = null;

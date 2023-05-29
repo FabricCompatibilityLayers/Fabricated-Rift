@@ -39,7 +39,7 @@ public abstract class MixinMinecraftServer {
     @Shadow public abstract GameType getGameType();
     @Shadow public abstract boolean isSinglePlayer();
 
-    @Inject(method = "loadDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;reloadPacksFromFinders()V"))
+    @Inject(method = "loadDataPacks(Ljava/io/File;Lnet/minecraft/world/storage/WorldInfo;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;reloadPacksFromFinders()V"))
     private void afterAddVanillaPackFinder(File serverDirectory, WorldInfo worldInfo, CallbackInfo ci) {
         for (DataPackFinderAdder resourcePackFinderAdder : RiftLoader.instance.getListeners(DataPackFinderAdder.class)) {
             for (IPackFinder packFinder : resourcePackFinderAdder.getDataPackFinders()) {
@@ -59,15 +59,15 @@ public abstract class MixinMinecraftServer {
         profiler.endSection();
     }
 
-    @Inject(method = "func_212369_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;func_212504_a(Lnet/minecraft/world/WorldServer;)V"))
+    @Inject(method = "method_3786", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;method_14591(Lnet/minecraft/world/WorldServer;)V"))
     private void onWorldLoad(ISaveHandler saveHandler, WorldSavedDataStorage savedDataStorage, WorldInfo info, WorldSettings settings, CallbackInfo ci) {
-    	WorldServer overworld = getWorld(DimensionType.OVERWORLD);
+    	WorldServer overworld = getWorld(DimensionType.field_13072);
 
-    	for (DimensionType type : DimensionType.func_212681_b()) {
+    	for (DimensionType type : DimensionType.getAll()) {
     		//Skip around existing types (the Overworld, Nether and End)
     		if (!worlds.containsKey(type)) {
     			WorldServerMulti world = new WorldServerMulti((MinecraftServer) (Object) this, saveHandler, type, overworld, profiler);
-    			world.func_212251_i__();
+    			world.init();
 
     	        worlds.put(type, world);
 
