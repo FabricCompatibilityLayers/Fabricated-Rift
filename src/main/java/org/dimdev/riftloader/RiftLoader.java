@@ -256,8 +256,8 @@ public class RiftLoader {
                 // Initialize the class first, in case it wants to add itself to the listenerInstanceMap
                 try {
                     Class.forName(listenerClass.getName(), true, listenerClass.getClassLoader());
-                } catch (ClassNotFoundException e) {
-                    throw new IllegalStateException(e);
+                } catch (Throwable e) {
+                    throw new IllegalStateException("Failed to initialize listener class '" + listenerClass.getName() + "'", e);
                 }
 
                 // Get the instance of that class, or create a new one if it wasn't instantiated yet
@@ -266,8 +266,8 @@ public class RiftLoader {
                     try {
                         listenerInstance = listenerInterface.cast(newInstance(listenerClass));
                         listenerInstanceMap.castAndPut(listenerClass, listenerInstance);
-                    } catch (ReflectiveOperationException e) {
-                        throw new RuntimeException("Failed to create listener instance", e);
+                    } catch (Throwable e) {
+                        throw new RuntimeException("Failed to create listener instance '" + listenerClass.getName() + "'", e);
                     }
                 }
 
