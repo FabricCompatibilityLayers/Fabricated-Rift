@@ -1,5 +1,8 @@
 package org.dimdev.utils;
 
+import net.fabricmc.loader.impl.launch.FabricLauncherBase;
+import net.fabricmc.loader.impl.util.UrlUtil;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
@@ -10,18 +13,6 @@ import java.net.URLClassLoader;
 import java.util.Arrays;
 
 public class ReflectionUtils {
-    private static final MethodHandle addURLHandle;
-
-    static {
-        try {
-            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
-            method.setAccessible(true);
-            addURLHandle = MethodHandles.lookup().unreflect(method);
-        } catch (ReflectiveOperationException e) {
-            throw new AssertionError(e);
-        }
-    }
-
     public static <T> T makeEnumInstance(Class<T> enumClass, Object... constructorArgs) {
         try {
             Constructor<?> constructor = enumClass.getDeclaredConstructors()[0];
@@ -57,10 +48,6 @@ public class ReflectionUtils {
     }
 
     public static void addURLToClasspath(URL url) {
-        try {
-            addURLHandle.invoke(ClassLoader.getSystemClassLoader(), url);
-        } catch (Throwable t) {
-            throw t instanceof RuntimeException ? (RuntimeException) t : new RuntimeException(t);
-        }
+        FabricLauncherBase.getLauncher().addToClassPath(UrlUtil.asPath(url));
     }
 }
