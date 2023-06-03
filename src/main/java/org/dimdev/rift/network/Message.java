@@ -44,9 +44,9 @@ public abstract class Message {
         PacketBuffer buffer = new PacketBuffer(Unpooled.buffer());
         write(buffer);
         switch (direction) {
-            case field_11942:
+            case field_11578:
                 return new SPacketCustomPayload(id, buffer);
-            case field_11941:
+            case field_11577:
                 return new CPacketCustomPayload(id, buffer);
             default:
                 throw new AssertionError("unreachable");
@@ -55,9 +55,9 @@ public abstract class Message {
 
     public final void send(EntityPlayer player) {
         if (player instanceof EntityPlayerMP) {
-            ((EntityPlayerMP) player).connection.getNetworkManager().sendPacket(toPacket(EnumPacketDirection.field_11942));
+            ((EntityPlayerMP) player).connection.getNetworkManager().sendPacket(toPacket(EnumPacketDirection.field_11578));
         } else if (player instanceof EntityPlayerSP) {
-            ((EntityPlayerSP) player).connection.getNetworkManager().sendPacket(toPacket(EnumPacketDirection.field_11941));
+            ((EntityPlayerSP) player).connection.getNetworkManager().sendPacket(toPacket(EnumPacketDirection.field_11577));
         } else {
             throw new IllegalArgumentException("Only supported for EntityPlayerMP and EntityPlayerSP, but got " + player.getClass());
         }
@@ -90,6 +90,6 @@ public abstract class Message {
     }
 
     public void sendToServer() {
-        Minecraft.getInstance().player.connection.sendPacket(toPacket(EnumPacketDirection.field_11941));
+        Minecraft.getInstance().player.connection.sendPacket(toPacket(EnumPacketDirection.field_11577));
     }
 }
