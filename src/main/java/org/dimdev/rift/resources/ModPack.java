@@ -1,6 +1,8 @@
 package org.dimdev.rift.resources;
 
 import com.google.common.collect.Lists;
+import net.fabricmc.loader.impl.util.FileSystemUtil;
+import net.fabricmc.loader.impl.util.UrlUtil;
 import net.minecraft.resources.AbstractResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
@@ -19,28 +21,63 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class ModPack extends AbstractResourcePack {
-    private final String root;
+    private final Path root;
     private final String name;
     private Logger LOGGER = LogManager.getLogger();
+    private final String separator;
 
     public ModPack(String name, URL root) {
+        this(name, Objects.requireNonNull(getRootAsPath(root)));
+    }
+
+    public ModPack(String name, Path root) {
         super(null);
         this.name = name;
-        this.root = root.toString();
+        this.root = root;
+        this.separator = root.getFileSystem().getSeparator();
     }
 
-    @Override
-    protected InputStream getInputStream(String path) throws IOException {
-        return new URL(root + path).openStream();
-    }
+    private static Path getRootAsPath(URL root) {
+        try {
+            FileSystemUtil.FileSystemDelegate delegate = FileSystemUtil.getJarFileSystem(root.toURI(), false);
+            FileSystem fs = delegate.get();
 
-    @Override
-    protected boolean resourceExists(String path) {
-        try (InputStream ignored = getInputStream(path)) {
-            return true;
-        } catch (IOException e) {
-            return false;
+            if (fs == null) {
+                throw new RuntimeException("Could not open JAR file " + root + " for NIO reading!");
+            }
+
+            return fs.getRootDirectories().iterator().next();
+        } catch (Throwable e) {
+            return null;
         }
+    }
+
+    private Path getPath(String filename) {
+        Path childPath = root.resolve(filename.replace("/", separator)).toAbsolutePath().normalize();
+
+        if (childPath.startsWith(root) && Files.exists(childPath)) {
+            return childPath;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected InputStream getInputStream(String filename) throws IOException {
+        Path path = getPath(filename);
+
+        if (path != null && Files.isRegularFile(path)) {
+            return Files.newInputStream(path);
+        }
+
+        // ReloadableResourceManagerImpl gets away with FileNotFoundException.
+        throw new FileNotFoundException("\"" + filename + "\" in Rift mod \"" + this.name + "\"");
+    }
+
+    @Override
+    protected boolean resourceExists(String filename) {
+        Path path = getPath(filename);
+        return path != null && Files.isRegularFile(path);
     }
 
     @Override
@@ -57,18 +94,9 @@ public class ModPack extends AbstractResourcePack {
 
         try {
             String path = String.format("%s/%s/%s", type.getDirectoryName(), location.getNamespace(), location.getPath());
-            URI url = new URL(root + path).toURI();
-            if ("file".equals(url.getScheme())) {
-                resourceLocations.addAll(getAllResourceLocations(maxDepth, location, Paths.get(url), filter));
-            } else if ("jar".equals(url.getScheme())) {
-                try (FileSystem fileSystem = FileSystems.newFileSystem(url, Collections.emptyMap())) {
-                    resourceLocations.addAll(getAllResourceLocations(maxDepth, location, fileSystem.getPath(path), filter));
-                }
-            } else {
-                LOGGER.error("Unsupported scheme " + url + " trying to list mod resources");
-            }
-        } catch (NoSuchFileException | FileNotFoundException ignored) {
-        } catch (IOException | URISyntaxException e) {
+            Path url = getPath(path);
+            resourceLocations.addAll(getAllResourceLocations(maxDepth, location, url, filter));
+        } catch (IOException e) {
             LOGGER.error("Couldn't get a list of all resources of '" + getName() + "'", e);
         }
 
@@ -81,7 +109,7 @@ public class ModPack extends AbstractResourcePack {
 
         while (pathIterator.hasNext()) {
             Path path = pathIterator.next();
-            if (!path.endsWith(".mcmeta") && Files.isRegularFile(path) && filter.test(path.getFileName().toString())) {
+            if (path != null && !path.endsWith(".mcmeta") && Files.isRegularFile(path) && filter.test(path.getFileName().toString())) {
                 resourceLocations.add(new ResourceLocation(rootLocation.getNamespace(), rootLocation.getPath() + "/" + rootPath.toAbsolutePath().relativize(path).toString().replaceAll("\\\\", "/")));
             }
         }
@@ -92,31 +120,26 @@ public class ModPack extends AbstractResourcePack {
     @Override
     public Set<String> getResourceNamespaces(ResourcePackType type) {
         try {
-            URI uri = new URL(root + type.getDirectoryName() + "/").toURI();
-            if ("file".equals(uri.getScheme())) {
-                Set<String> namespaces = new HashSet<>();
-                File rootFile = new File(uri);
-                if (rootFile.isDirectory()) {
-                    for (File file : rootFile.listFiles()) {
-                        namespaces.add(file.getName());
-                    }
-                }
-                return namespaces;
-            } else if ("jar".equals(uri.getScheme())) {
-                try (FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
-                     DirectoryStream<Path> directoryStream = fileSystem.provider().newDirectoryStream(fileSystem.getPath(type.getDirectoryName()), x -> true)) {
-                    Set<String> namespaces = new HashSet<>();
-                    for (Path p : directoryStream) {
-                        String fileName = p.getFileName().toString();
-                        namespaces.add(fileName.substring(0, fileName.length() - 1));
-                    }
-                    return namespaces;
-                }
-            } else {
-                LOGGER.error("Unsupported scheme " + uri + " trying to list mod resource namespaces");
+            Path typePath = getPath(type.getDirectoryName());
+
+            if (typePath == null || !(Files.isDirectory(typePath))) {
+                return Collections.emptySet();
             }
-        } catch (NoSuchFileException | FileNotFoundException | NotDirectoryException ignored) {
-        } catch (IOException | URISyntaxException e) {
+
+            Set<String> namespaces = new HashSet<>();
+
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(typePath, Files::isDirectory)) {
+                for (Path path : stream) {
+                    String s = path.getFileName().toString();
+                    // s may contain trailing slashes, remove them
+                    s = s.replace(separator, "");
+
+                    namespaces.add(s);
+                }
+            }
+
+            return namespaces;
+        } catch (IOException e) {
             LOGGER.error("Couldn't get a list of resource namespaces of '" + getName() + "'", e);
         }
 
