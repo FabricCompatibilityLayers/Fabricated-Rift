@@ -70,7 +70,7 @@ dependencies {
 	mappings "de.oceanlabs.mcp:mcp_config:${project.minecraft_version}@zip"
 	mappings "de.oceanlabs.mcp:mcp_${project.mcp_channel}:${project.mcp_version}-${project.minecraft_version}@zip"
 
-	mappings "net.legacyfabric.v2:intermediary:${project.minecraft_version}:v2"
+	mappings "net.legacyfabric:intermediary:${project.minecraft_version}:v2"
 //mappings "net.legacyfabric.v2:yarn:${project.yarn_mappings}:v2"
 
 	fabric "net.fabricmc:fabric-loader:${project.loader_version}"
