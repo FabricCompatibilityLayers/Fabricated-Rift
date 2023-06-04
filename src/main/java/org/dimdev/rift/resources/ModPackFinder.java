@@ -1,5 +1,6 @@
 package org.dimdev.rift.resources;
 
+import net.fabricmc.loader.impl.util.FileSystemUtil;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackType;
@@ -10,6 +11,9 @@ import org.dimdev.riftloader.RiftLoader;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemAlreadyExistsException;
+import java.nio.file.Path;
 import java.util.Map;
 
 public class ModPackFinder implements IPackFinder {
@@ -22,14 +26,28 @@ public class ModPackFinder implements IPackFinder {
     @Override
     public <T extends ResourcePackInfo> void addPackInfosToMap(Map<String, T> nameToPackMap, ResourcePackInfo.IFactory<T> packInfoFactory) {
         for (ModInfo mod : RiftLoader.instance.getMods()) {
-            URL root = getRootUrl(mod);
+            if (mod.id.equals("rift")) continue;
+            try {
+                FileSystemUtil.FileSystemDelegate delegate = FileSystemUtil.getJarFileSystem(mod.source.toPath().toAbsolutePath().normalize(), false);
+                FileSystem fs = delegate.get();
 
-            try (ModPack pack = new ModPack(mod.name != null ? mod.name : mod.id, root)) {
-                PackMetadataSection meta = pack.getMetadata(PackMetadataSection.SERIALIZER);
-                if (meta != null && !pack.getResourceNamespaces(type).isEmpty()) {
-                    nameToPackMap.put(mod.id, packInfoFactory.create(mod.id, type == ResourcePackType.field_14188, () -> pack, pack, meta, ResourcePackInfo.Priority.field_14280));
+                if (fs == null) {
+                    throw new RuntimeException("Could not open JAR file " + mod.source + " for NIO reading!");
                 }
-            } catch (IOException ignored) {}
+
+                Path rootPath = fs.getRootDirectories().iterator().next();
+
+                try (ModPack pack = new ModPack(mod.name != null ? mod.name : mod.id, rootPath)) {
+                    PackMetadataSection meta = pack.getMetadata(PackMetadataSection.SERIALIZER);
+                    if (meta != null && !pack.getResourceNamespaces(type).isEmpty()) {
+                        nameToPackMap.put(mod.id, packInfoFactory.create(mod.id, type == ResourcePackType.field_14188, () -> pack, pack, meta, ResourcePackInfo.Priority.field_14280));
+                    }
+                } catch (IOException ignored) {
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (FileSystemAlreadyExistsException ignored) {
+            }
         }
     }
 
