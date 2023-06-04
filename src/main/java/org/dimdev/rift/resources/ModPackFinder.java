@@ -46,8 +46,7 @@ public class ModPackFinder implements IPackFinder {
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            } catch (FileSystemAlreadyExistsException e) {
-                continue;
+            } catch (FileSystemAlreadyExistsException ignored) {
             }
         }
     }

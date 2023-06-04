@@ -91,13 +91,15 @@ public class ModPack extends AbstractResourcePack {
 
     public Collection<ResourceLocation> getAllResourceLocations(ResourcePackType type, ResourceLocation location, int maxDepth, Predicate<String> filter) {
         Set<ResourceLocation> resourceLocations = new HashSet<>();
+        String path = String.format("%s/%s/%s", type.getDirectoryName(), location.getNamespace(), location.getPath());
 
         try {
-            String path = String.format("%s/%s/%s", type.getDirectoryName(), location.getNamespace(), location.getPath());
             Path url = getPath(path);
-            resourceLocations.addAll(getAllResourceLocations(maxDepth, location, url, filter));
+            if (url != null && Files.exists(url)) {
+                resourceLocations.addAll(getAllResourceLocations(maxDepth, location, url, filter));
+            }
         } catch (IOException e) {
-            LOGGER.error("Couldn't get a list of all resources of '" + getName() + "'", e);
+            LOGGER.error("Couldn't get a list of all resources of '" + getName() + "' of type " + path, e);
         }
 
         return resourceLocations;
