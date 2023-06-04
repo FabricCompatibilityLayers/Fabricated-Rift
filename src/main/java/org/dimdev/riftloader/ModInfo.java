@@ -27,6 +27,54 @@ public class ModInfo {
                 if (listener.side == null) listener.side = Side.BOTH;
                 return listener;
             })
+            .registerTypeAdapter(ModInfo.class, (JsonDeserializer<ModInfo>) (json, type, context) -> {
+                ModInfo modInfo = new ModInfo();
+
+                if (!json.isJsonObject()) {
+                    throw new JsonSyntaxException("ModInfo is not an Object!");
+                }
+
+                JsonObject object = json.getAsJsonObject();
+
+                if (object.has("id")) {
+                    modInfo.id = object.get("id").getAsString();
+                } else {
+                    throw new JsonSyntaxException("ModInfo with no id!");
+                }
+
+                if (object.has("name")) {
+                    modInfo.name = object.get("name").getAsString();
+                } else {
+                    modInfo.name = modInfo.id;
+                }
+
+                if (object.has("authors")) {
+                    JsonElement authors = object.get("authors");
+                    if (authors.isJsonArray()) {
+                        JsonArray array = authors.getAsJsonArray();
+                        for (JsonElement author : array) {
+                            if (author.isJsonPrimitive()) {
+                                modInfo.authors.add(author.getAsString());
+                            }
+                        }
+                    } else if (authors.isJsonPrimitive()) {
+                        modInfo.authors.add(authors.getAsString());
+                    }
+                }
+
+                if (object.has("listeners")) {
+                    JsonElement listeners = object.get("listeners");
+                    if (listeners.isJsonArray()) {
+                        JsonArray array = listeners.getAsJsonArray();
+
+                        for (JsonElement listenerElement : array) {
+                            modInfo.listeners.add(ModInfo.GSON.fromJson(listenerElement, Listener.class));
+                        }
+                    }
+                }
+
+                return modInfo;
+            })
             .create();
 
     public static class Listener {
