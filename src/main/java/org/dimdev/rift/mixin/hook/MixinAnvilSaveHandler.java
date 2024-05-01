@@ -7,10 +7,10 @@ import net.minecraft.world.chunk.storage.AnvilSaveHandler;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.SaveHandler;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 
-import javax.annotation.Nullable;
 import java.io.File;
 
 @Mixin(AnvilSaveHandler.class)

@@ -1,4 +1,4 @@
-accessWidener   v2  mcp
+accessWidener   v2  named
 
 accessible method net/minecraft/block/Block register (Ljava/lang/String;Lnet/minecraft/block/Block;)V
 accessible method net/minecraft/block/Block register (Lnet/minecraft/util/ResourceLocation;Lnet/minecraft/block/Block;)V

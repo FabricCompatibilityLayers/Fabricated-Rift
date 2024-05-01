@@ -59,9 +59,9 @@ public abstract class MixinMinecraftServer {
         profiler.endSection();
     }
 
-    @Inject(method = "method_20316", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;method_21387(Lnet/minecraft/world/WorldServer;)V"))
+    @Inject(method = "func_212369_a", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/management/PlayerList;func_212504_a(Lnet/minecraft/world/WorldServer;)V"))
     private void onWorldLoad(ISaveHandler saveHandler, WorldSavedDataStorage savedDataStorage, WorldInfo info, WorldSettings settings, CallbackInfo ci) {
-    	WorldServer overworld = getWorld(DimensionType.field_18954);
+    	WorldServer overworld = getWorld(DimensionType.OVERWORLD);
 
     	for (DimensionType type : DimensionType.getAll()) {
     		//Skip around existing types (the Overworld, Nether and End)

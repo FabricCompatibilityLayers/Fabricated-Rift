@@ -40,7 +40,7 @@ public class ModPackFinder implements IPackFinder {
                 try (ModPack pack = new ModPack(mod.name != null ? mod.name : mod.id, rootPath)) {
                     PackMetadataSection meta = pack.getMetadata(PackMetadataSection.SERIALIZER);
                     if (meta != null && !pack.getResourceNamespaces(type).isEmpty()) {
-                        nameToPackMap.put(mod.id, packInfoFactory.create(mod.id, type == ResourcePackType.field_21886, () -> pack, pack, meta, ResourcePackInfo.Priority.field_21920));
+                        nameToPackMap.put(mod.id, packInfoFactory.create(mod.id, type == ResourcePackType.CLIENT_RESOURCES, () -> pack, pack, meta, ResourcePackInfo.Priority.TOP));
                     }
                 } catch (IOException ignored) {
                 }

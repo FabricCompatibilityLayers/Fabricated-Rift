@@ -3,11 +3,11 @@ package org.dimdev.rift.mixin.core;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.VanillaPack;
 import net.minecraft.util.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,7 +25,7 @@ public class MixinVanillaPack {
      */
     @Nullable
     @Overwrite(constraints = "OPTIFINE(0-1)")
-    protected @org.jetbrains.annotations.Nullable InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
+    protected InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
         if (basePath != null) {

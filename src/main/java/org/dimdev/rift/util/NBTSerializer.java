@@ -1,8 +1,7 @@
 package org.dimdev.rift.util;
 
 import net.minecraft.nbt.NBTTagCompound;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Base interface for (de)serializing objects of type {@code T}
@@ -14,14 +13,14 @@ public interface NBTSerializer<T> {
      * @param instance The instance to be serialized
      * @return The written tag compound
      */
-    @Nonnull
-    NBTTagCompound serialize(@Nonnull T instance);
+    @NotNull
+    NBTTagCompound serialize(@NotNull T instance);
 
     /**
      * Reads an object {@code T} from the given compound
      * @param compound The tag compound to be read from
      * @return An instance of {@code T}
      */
-    @Nonnull
-    T deserialize(@Nonnull NBTTagCompound compound);
+    @NotNull
+    T deserialize(@NotNull NBTTagCompound compound);
 }

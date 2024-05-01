@@ -1,36 +1,17 @@
 plugins {
 	id 'java'
-	id 'xyz.wagyourtail.unimined' version "0.4.10-SNAPSHOT"
+	id 'xyz.wagyourtail.unimined' version "1.2.4-SNAPSHOT"
 	id 'maven-publish'
 }
 
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+base {
+	archivesName = project.archives_base_name
+}
+
 repositories {
-	mavenCentral()
-
-	maven {
-		name = 'Fabric'
-		url = "https://maven.fabricmc.net/"
-	}
-	maven {
-		name = "Legacy Fabric"
-		url = "https://maven.legacyfabric.net/"
-	}
-	// WagYourTail Mavens
-	maven { url "https://maven.wagyourtail.xyz/releases" }
-	maven { url "https://maven.wagyourtail.xyz/snapshots" }
-
-	maven {
-		url "https://maven.minecraftforge.net/"
-		metadataSources {
-			artifact()
-			mavenPom()
-		}
-	}
-
 	maven {
 		name = "Modrinth"
 		url = "https://api.modrinth.com/maven"
@@ -40,46 +21,22 @@ repositories {
 	}
 }
 
-//sourceSets {
-//	main
-//	debug {
-//		compileClasspath += main.compileClasspath
-//	}
-//}
+unimined.minecraft {
+	version project.minecraft_version
 
-unimined {
-	useGlobalCache = false
-}
-
-minecraft {
 	legacyFabric {
+		loader project.loader_version
 		accessWidener = file("src/main/resources/fabricated-rift.accesswidener")
 	}
 
-	mcRemapper.tinyRemapperConf = {
-		// most mcp mappings (except older format) dont include field desc
-		ignoreFieldDesc(true)
-		// this also fixes some issues with them, as it tells tiny remapper to try harder to resolve conflicts
-		ignoreConflicts(true)
+	mappings {
+		searge()
+		mcp(project.mcp_channel, "${project.mcp_version}-${project.minecraft_version}")
 	}
 }
 
 dependencies {
-	minecraft "net.minecraft:minecraft:${project.minecraft_version}"
-
-	mappings "de.oceanlabs.mcp:mcp_config:${project.minecraft_version}@zip"
-	mappings "de.oceanlabs.mcp:mcp_${project.mcp_channel}:${project.mcp_version}-${project.minecraft_version}@zip"
-
-	mappings "net.legacyfabric:intermediary:${project.minecraft_version}:v2"
-//mappings "net.legacyfabric.v2:yarn:${project.yarn_mappings}:v2"
-
-	fabric "net.fabricmc:fabric-loader:${project.loader_version}"
-
 	modImplementation("maven.modrinth:mod-remapping-api:${project.mod_remapping_api}")
-}
-
-base {
-	archivesName = project.archives_base_name
 }
 
 processResources {

@@ -6,11 +6,10 @@ import net.minecraft.util.ResourceLocation;
 
 import org.dimdev.riftloader.OptifineLoader;
 import org.dimdev.utils.ReflectionUtils;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-
-import javax.annotation.Nullable;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,7 +34,7 @@ public class MixinVanillaPack {
      */
     @Nullable
     @Overwrite(constraints = "OPTIFINE(1+)")
-    protected @org.jetbrains.annotations.Nullable InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
+    protected InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
         InputStream in = optifineResourceFisher.apply(pathString);

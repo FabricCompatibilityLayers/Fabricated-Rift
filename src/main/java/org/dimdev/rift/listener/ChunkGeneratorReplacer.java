@@ -5,8 +5,8 @@ import net.minecraft.world.WorldType;
 import net.minecraft.world.gen.ChunkGeneratorType;
 import net.minecraft.world.gen.IChunkGenSettings;
 import net.minecraft.world.gen.IChunkGenerator;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 /**

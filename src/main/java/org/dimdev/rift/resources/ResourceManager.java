@@ -11,10 +11,10 @@ import java.util.List;
 public class ResourceManager implements ResourcePackFinderAdder, DataPackFinderAdder {
     @Override
     public List<IPackFinder> getResourcePackFinders() {
-        return Collections.singletonList(new ModPackFinder(ResourcePackType.field_21886));
+        return Collections.singletonList(new ModPackFinder(ResourcePackType.CLIENT_RESOURCES));
     }
 
     @Override public List<IPackFinder> getDataPackFinders() {
-        return Collections.singletonList(new ModPackFinder(ResourcePackType.field_21887));
+        return Collections.singletonList(new ModPackFinder(ResourcePackType.SERVER_DATA));
     }
 }
