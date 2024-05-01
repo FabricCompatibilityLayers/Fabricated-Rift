@@ -19,6 +19,11 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+
+	maven {
+		name = "Jitpack"
+		url 'https://jitpack.io/'
+	}
 }
 
 unimined.minecraft {
@@ -37,13 +42,19 @@ unimined.minecraft {
 
 dependencies {
 	modImplementation("maven.modrinth:mod-remapping-api:${project.mod_remapping_api}")
+	modImplementation("maven.modrinth:spasm:0.2")
+	implementation("com.github.thecatcore.CursedMixinExtensions:fabric:1.0.0")
 }
 
 processResources {
 	inputs.property "version", project.version
+	inputs.property "mc_version", project.minecraft_version
+	inputs.property "mrapi_version", project.mod_remapping_api
 
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+		expand "version": project.version,
+				"mc_version": rootProject.minecraft_version,
+				"mrapi_version": project.mod_remapping_api
 	}
 }
 
@@ -56,6 +67,8 @@ tasks.withType(JavaCompile).configureEach {
 
 	sourceCompatibility = JavaVersion.VERSION_1_8
 	targetCompatibility = JavaVersion.VERSION_1_8
+
+	options.deprecation = true
 }
 
 java {

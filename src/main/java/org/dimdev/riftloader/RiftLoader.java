@@ -222,7 +222,7 @@ public class RiftLoader {
             }
 
             accessTransformer = new AccessTransformer(transformations);
-            ClassTransformer.registerTransformer(new RiftAccessTransformer());
+            ClassTransformer.registerPostTransformer(new RiftAccessTransformer());
         } catch (Throwable t) {
             throw new RuntimeException("Failed to initialize access transformers", t);
         }

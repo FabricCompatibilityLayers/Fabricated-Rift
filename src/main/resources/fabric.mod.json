@@ -15,7 +15,7 @@
   "icon": "assets/modid/icon.png",
   "environment": "*",
   "entrypoints": {
-    "mod-remapper-api:modremapper": [
+    "mod-remapper-api:modremapper_v1": [
       "fr.catcore.fabricatedrift.FabricatedRift"
     ],
     "preLaunch": [
@@ -28,7 +28,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.14.19",
-    "mod-remapping-api": ">=1.9.0",
-    "minecraft": "1.13.2"
+    "minecraft": "${mc_version}",
+    "mod-remapping-api": ">=${mrapi_version}"
   }
 }
