@@ -1,6 +1,5 @@
 package fr.catcore.fabricatedrift;
 
-import fr.catcore.modremapperapi.ClassTransformer;
 import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.MappingBuilder;
 import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.ModRemapper;
 import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.RemapLibrary;
@@ -9,6 +8,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +22,13 @@ public class FabricatedRift implements ModRemapper {
     @Override
     public void addRemapLibraries(List<RemapLibrary> list, EnvType envType) {
         list.add(new RemapLibrary(
-                MOD_CONTAINER.findPath("./libs/Rift-FINAL.jar").orElseThrow(RuntimeException::new),
+                MOD_CONTAINER.findPath("./libs/Rift-FINAL.jar").orElseGet(() -> getLibDevPath("Rift-FINAL.jar")),
                 "rift.jar"
         ));
+    }
+
+    private Path getLibDevPath(String name) {
+        return MOD_CONTAINER.findPath("./../../../libs/" + name).orElseThrow(RuntimeException::new);
     }
 
     @Override
