@@ -4,19 +4,15 @@ import net.minecraft.resources.ResourcePackType;
 import net.minecraft.resources.VanillaPack;
 import net.minecraft.util.ResourceLocation;
 
-import org.dimdev.riftloader.OptifineLoader;
-import org.dimdev.utils.ReflectionUtils;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.nio.file.Files;
@@ -34,7 +30,7 @@ public class MixinVanillaPack {
      */
     @Nullable
     @Overwrite(constraints = "OPTIFINE(1+)")
-    protected InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
+    public InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
         InputStream in = optifineResourceFisher.apply(pathString);
@@ -64,18 +60,13 @@ public class MixinVanillaPack {
     	//Ironically Optifine does all this via reflection too, so we're actually no slower than how it otherwise works
     	try {
     		//Fish for the type
-    		Class<?> transformer = Class.forName(OptifineLoader.OPTIFINE_TRANSFORMER);
-    		//Then the instance field Optifine helpfully hangs onto
-    		Field instanceField = ReflectionUtils.findField(transformer, transformer);
-    		Object instance = instanceField.get(null);
-    		if (instance == null) throw new IllegalStateException("Transformer hasn't loaded yet?");
+    		Class<?> transformer = Class.forName("net.optifine.reflect.ReflectorForge");
     		//Now fish for the method
-    		Method method = transformer.getDeclaredMethod("getOptiFineResource", String.class);
+    		Method method = transformer.getDeclaredMethod("getOptiFineResourceStream", String.class);
     		MethodHandle handle = MethodHandles.lookup().unreflect(method);
     		optifineResourceFisher = path -> {
 				try {
-					byte[] resource = (byte[]) handle.invoke(instance, path);
-					return resource != null ? new ByteArrayInputStream(resource) : null;
+					return (InputStream) handle.invoke(path);
 				} catch (Throwable t) {
 					throw new RuntimeException("Error getting resource from Optifine", t);
 				}
