@@ -15,11 +15,11 @@
   "icon": "assets/modid/icon.png",
   "environment": "*",
   "entrypoints": {
-    "mod-remapper-api:modremapper_v1": [
-      "fr.catcore.fabricatedrift.FabricatedRift"
+    "mod-remapper-api:modremapper_v2": [
+      "io.github.fabriccompatibilitylayers.fabricatedrift.FabricatedRift"
     ],
     "preLaunch": [
-      "fr.catcore.fabricatedrift.FabricatedRiftPreLaunch"
+      "io.github.fabriccompatibilitylayers.fabricatedrift.FabricatedRiftPreLaunch"
     ]
   },
   "mixins": [

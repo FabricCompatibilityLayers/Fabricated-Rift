@@ -1,4 +1,4 @@
-package fr.catcore.fabricatedrift;
+package io.github.fabriccompatibilitylayers.fabricatedrift;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.loader.api.FabricLoader;

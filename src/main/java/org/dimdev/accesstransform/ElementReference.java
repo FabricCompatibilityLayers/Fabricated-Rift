@@ -1,6 +1,6 @@
 package org.dimdev.accesstransform;
 
-import fr.catcore.fabricatedrift.RemapUtils;
+import io.github.fabriccompatibilitylayers.fabricatedrift.RemapUtils;
 
 import java.util.Objects;
 

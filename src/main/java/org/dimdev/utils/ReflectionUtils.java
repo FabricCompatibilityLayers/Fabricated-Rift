@@ -1,15 +1,14 @@
 package org.dimdev.utils;
 
 import net.fabricmc.loader.impl.launch.FabricLauncherBase;
-import net.fabricmc.loader.impl.util.UrlUtil;
 
-import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLClassLoader;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 public class ReflectionUtils {
@@ -47,7 +46,7 @@ public class ReflectionUtils {
     	throw new NoSuchMethodException("Cannot find method in " + target + '(' + Arrays.toString(params) + ") " + returnType);
     }
 
-    public static void addURLToClasspath(URL url) {
-        FabricLauncherBase.getLauncher().addToClassPath(UrlUtil.asPath(url));
+    public static void addURLToClasspath(URL url) throws URISyntaxException {
+        FabricLauncherBase.getLauncher().addToClassPath(Paths.get(url.toURI()));
     }
 }

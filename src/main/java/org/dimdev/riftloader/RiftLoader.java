@@ -1,8 +1,8 @@
 package org.dimdev.riftloader;
 
 import com.google.gson.JsonParseException;
-import fr.catcore.modremapperapi.ClassTransformer;
-import fr.catcore.modremapperapi.utils.Constants;
+import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.CacheHandler;
+import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.ClassTransformer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,7 @@ public class RiftLoader {
     public static final RiftLoader instance = new RiftLoader();
     private static final Logger log = LogManager.getLogger("RiftLoader");
 
-    public final File modsDir = new File(Constants.VERSIONED_FOLDER, "mods");
+    public final File modsDir = CacheHandler.getCacheHandler("rift").resolveCache("mods").toFile();
     public final File configDir = FabricLoader.getInstance().getConfigDir().toFile();
     private Side side;
     private boolean loaded;
@@ -169,7 +169,7 @@ public class RiftLoader {
             if (Objects.equals(modInfo.id, "rift")) continue;
             try {
                 addURLToClasspath(modInfo.source.toURI().toURL());
-            } catch (MalformedURLException e) {
+            } catch (MalformedURLException | URISyntaxException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -203,7 +203,7 @@ public class RiftLoader {
         log.info("Done initializing mods");
     }
 
-    private static void addURLToClasspath(URL url) {
+    private static void addURLToClasspath(URL url) throws URISyntaxException {
         ReflectionUtils.addURLToClasspath(url);
     }
 

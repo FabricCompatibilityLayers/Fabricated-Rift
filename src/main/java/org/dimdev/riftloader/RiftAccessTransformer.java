@@ -1,8 +1,8 @@
 package org.dimdev.riftloader;
 
-import fr.catcore.modremapperapi.api.IClassTransformer;
+import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.ClassTransformer;
 
-public class RiftAccessTransformer implements IClassTransformer {
+public class RiftAccessTransformer implements ClassTransformer {
     @Override
     public boolean handlesClass(String s, String s1) {
         return s.startsWith("net.minecraft");
