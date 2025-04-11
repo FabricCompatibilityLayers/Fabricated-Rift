@@ -65,11 +65,19 @@ dependencies {
 	}
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
-	fabricApi.osl("1.13.2", "0.16.3").forEach {
-		modImplementation(ornitheImplementation(it))
-	}
+	if (file(".gradle/unimined/local/modTransform/core-0.6.0-mapped-mcp.jar").exists()) {
+		fabricApi.osl("1.13.2", "0.16.3").forEach {
+			modImplementation(ornitheImplementation(it))
+		}
 
-	modImplementation(ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2"))
+		modImplementation(ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2"))
+	} else {
+		fabricApi.osl("1.13.2", "0.16.3").forEach {
+			ornitheImplementation(it)
+		}
+
+		ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
+	}
 }
 
 processResources {
