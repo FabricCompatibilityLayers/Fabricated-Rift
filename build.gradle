@@ -20,6 +20,7 @@ repositories {
 		}
 	}
 	unimined.ornitheMaven()
+	unimined.quiltMaven()
 
 	maven {
 		name = "Jitpack"
@@ -65,10 +66,10 @@ dependencies {
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
 	fabricApi.osl("1.13.2", "0.16.3").forEach {
-		ornitheImplementation(it)
+		modImplementation(ornitheImplementation(it))
 	}
 
-	ornitheImplementation("com.terraformersmc:modmenu:0.3.0+1.13.2")
+	modImplementation(ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2"))
 }
 
 processResources {

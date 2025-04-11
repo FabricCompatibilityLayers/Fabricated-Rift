@@ -20,11 +20,15 @@
     ],
     "preLaunch": [
       "io.github.fabriccompatibilitylayers.fabricatedrift.FabricatedRiftPreLaunch"
+    ],
+    "modmenu": [
+      "io.github.fabriccompatibilitylayers.fabricatedrift.modmenu.FabricatedRiftModMenuCompat"
     ]
   },
   "mixins": [
     "mixins.rift.core.json",
-    "mixins.rift.hooks.json"
+    "mixins.rift.hooks.json",
+    "mixins.fabricated-rift.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.19",

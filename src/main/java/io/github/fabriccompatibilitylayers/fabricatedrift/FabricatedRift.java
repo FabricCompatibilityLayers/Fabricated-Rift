@@ -37,6 +37,10 @@ public class FabricatedRift implements ModRemapper {
 
     @Override
     public List<ModRemapper> collectSubRemappers(List<ModCandidate> list) {
+        if (FabricLoader.getInstance().isModLoaded("modmenu")) {
+            list.removeIf(candidate -> "riftmodlist".equals(candidate.getId()));
+        }
+
         return Collections.emptyList();
     }
 
@@ -70,7 +74,12 @@ public class FabricatedRift implements ModRemapper {
 
     @Override
     public void registerAdditionalMappings(MappingBuilder mappingBuilder) {
-
+        if (FabricLoader.getInstance().isModLoaded("modmenu")) {
+            mappingBuilder.addMapping("me/shedaniel/api/ConfigRegistry", "io/github/fabriccompatibilitylayers/fabricatedrift/modmenu/RiftModListConfigRegistry")
+                    .method("registerConfig", "(Ljava/lang/String;Ljava/lang/Runnable;)V")
+                    .method("unregisterConfig", "(Ljava/lang/String;)V")
+                    .method("getConfigRunnable", "(Ljava/lang/String;)Ljava/util/Optional;");
+        }
     }
 
     @Override

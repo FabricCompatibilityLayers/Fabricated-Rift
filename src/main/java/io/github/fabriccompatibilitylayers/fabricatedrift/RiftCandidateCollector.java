@@ -7,10 +7,7 @@ import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.ModDiscovererC
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +55,11 @@ public class RiftCandidateCollector implements ModDiscovererConfig.Collector {
         ZIP_PROPERTIES.put("encoding", "UTF-8");
     }
 
-    private static FileSystem getJarFileSystem(Path path) throws IOException {
-        return FileSystems.newFileSystem(URI.create("jar:" + path.toUri()), ZIP_PROPERTIES);
+    public static FileSystem getJarFileSystem(Path path) throws IOException {
+        try {
+            return FileSystems.newFileSystem(URI.create("jar:" + path.toUri()), ZIP_PROPERTIES);
+        } catch (FileSystemAlreadyExistsException e) {
+            return FileSystems.getFileSystem(URI.create("jar:" + path.toUri()));
+        }
     }
 }
