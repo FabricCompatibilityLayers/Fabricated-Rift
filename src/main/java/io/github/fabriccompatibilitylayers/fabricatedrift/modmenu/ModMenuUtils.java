@@ -14,19 +14,34 @@ import java.io.InputStream;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public class ModMenuUtils {
+    private static final List<Path> IGNORED_PATHS = new ArrayList<>();
+
     public static DynamicTexture createIcon(FabricIconHandler handler, RiftMod info) {
         try {
             FabricIconHandlerAccessor accessor = (FabricIconHandlerAccessor) handler;
 
             Path iconPath = info.rootPath.resolve(info.modInfo.iconPath.replace("/", info.rootPath.getFileSystem().getSeparator()));
 
+            if (IGNORED_PATHS.contains(iconPath)) {
+                return null;
+            }
+
             if (!accessor.getCache().containsKey(iconPath)) {
                 try (FileSystem fs = RiftCandidateCollector.getJarFileSystem(info.modInfo.source.toPath())) {
-                    InputStream inputStream = Files.newInputStream(fs.getPath("/" + info.modInfo.iconPath));
+                    Path subPath = fs.getPath("/" + info.modInfo.iconPath);
+
+                    if (!Files.exists(subPath)) {
+                        IGNORED_PATHS.add(iconPath);
+                        return null;
+                    }
+
+                    InputStream inputStream = Files.newInputStream(subPath);
 
                     DynamicTexture var8;
                     try {

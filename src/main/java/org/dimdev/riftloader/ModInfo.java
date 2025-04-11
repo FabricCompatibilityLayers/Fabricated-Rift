@@ -95,6 +95,8 @@ public class ModInfo {
 
                 if (object.has("icon_file")) {
                     modInfo.iconPath = object.get("icon_file").getAsString();
+                } else {
+                    modInfo.iconPath = "pack.png";
                 }
 
                 return modInfo;
@@ -118,7 +120,5 @@ public class ModInfo {
     public List<String> authors = new ArrayList<>();
     public List<Listener> listeners = new ArrayList<>();
     @ApiStatus.Internal
-    public String version, url, description;
-    @ApiStatus.Internal
-    public @Nullable String iconPath;
+    public String version, url, description, iconPath;
 }
