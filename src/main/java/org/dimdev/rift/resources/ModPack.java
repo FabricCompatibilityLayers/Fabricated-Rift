@@ -1,20 +1,16 @@
 package org.dimdev.rift.resources;
 
 import com.google.common.collect.Lists;
-import net.fabricmc.loader.impl.util.FileSystemUtil;
-import net.fabricmc.loader.impl.util.UrlUtil;
+import io.github.fabriccompatibilitylayers.fabricatedrift.FileUtils;
 import net.minecraft.resources.AbstractResourcePack;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
@@ -39,8 +35,7 @@ public class ModPack extends AbstractResourcePack {
 
     private static Path getRootAsPath(URL root) {
         try {
-            FileSystemUtil.FileSystemDelegate delegate = FileSystemUtil.getJarFileSystem(root.toURI(), false);
-            FileSystem fs = delegate.get();
+            FileSystem fs = FileUtils.getJarFileSystem(root.toURI());
 
             if (fs == null) {
                 throw new RuntimeException("Could not open JAR file " + root + " for NIO reading!");
@@ -55,9 +50,13 @@ public class ModPack extends AbstractResourcePack {
     private Path getPath(String filename) {
         Path childPath = root.resolve(filename.replace("/", separator)).toAbsolutePath().normalize();
 
-        if (childPath.startsWith(root) && Files.exists(childPath)) {
-            return childPath;
-        } else {
+        try {
+            if (childPath.startsWith(root) && Files.exists(childPath)) {
+                return childPath;
+            } else {
+                return null;
+            }
+        } catch (Throwable e) {
             return null;
         }
     }

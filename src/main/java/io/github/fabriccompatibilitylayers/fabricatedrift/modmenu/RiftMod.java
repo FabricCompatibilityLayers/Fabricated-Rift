@@ -5,7 +5,7 @@ import com.terraformersmc.modmenu.api.UpdateInfo;
 import com.terraformersmc.modmenu.util.VersionUtil;
 import com.terraformersmc.modmenu.util.mod.Mod;
 import com.terraformersmc.modmenu.util.mod.fabric.FabricIconHandler;
-import io.github.fabriccompatibilitylayers.fabricatedrift.RiftCandidateCollector;
+import io.github.fabriccompatibilitylayers.fabricatedrift.FileUtils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import org.dimdev.riftloader.ModInfo;
@@ -25,7 +25,8 @@ public class RiftMod implements Mod {
         Path path;
         this.modInfo = modInfo;
 
-        try (FileSystem fs = RiftCandidateCollector.getJarFileSystem(modInfo.source.toPath())) {
+        try {
+            FileSystem fs = FileUtils.getJarFileSystem(modInfo.source.toPath());
             path = fs.getRootDirectories().iterator().next();
         } catch (IOException e) {
             path = null;

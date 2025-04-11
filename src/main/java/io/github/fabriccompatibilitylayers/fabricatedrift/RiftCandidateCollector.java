@@ -6,12 +6,9 @@ import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.ModCandidate;
 import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.ModDiscovererConfig;
 
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.*;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class RiftCandidateCollector implements ModDiscovererConfig.Collector {
     private static final Gson GSON = new Gson();
@@ -31,7 +28,7 @@ public class RiftCandidateCollector implements ModDiscovererConfig.Collector {
         }
 
         if (riftFound) {
-            try (FileSystem fs = getJarFileSystem(path)) {
+            try (FileSystem fs = FileUtils.getJarFileSystem(path)) {
                 Path riftModPath = fs.getPath("/riftmod.json");
                 JsonObject object = GSON.fromJson(Files.newBufferedReader(riftModPath), JsonObject.class);
 
@@ -46,20 +43,5 @@ public class RiftCandidateCollector implements ModDiscovererConfig.Collector {
         }
 
         return Collections.emptyList();
-    }
-
-    private static final Map<String, String> ZIP_PROPERTIES = new HashMap<>();
-
-    static {
-        ZIP_PROPERTIES.put("create", "false");
-        ZIP_PROPERTIES.put("encoding", "UTF-8");
-    }
-
-    public static FileSystem getJarFileSystem(Path path) throws IOException {
-        try {
-            return FileSystems.newFileSystem(URI.create("jar:" + path.toUri()), ZIP_PROPERTIES);
-        } catch (FileSystemAlreadyExistsException e) {
-            return FileSystems.getFileSystem(URI.create("jar:" + path.toUri()));
-        }
     }
 }

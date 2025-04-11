@@ -1,6 +1,6 @@
 package org.dimdev.rift.resources;
 
-import net.fabricmc.loader.impl.util.FileSystemUtil;
+import io.github.fabriccompatibilitylayers.fabricatedrift.FileUtils;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackInfo;
 import net.minecraft.resources.ResourcePackType;
@@ -28,8 +28,7 @@ public class ModPackFinder implements IPackFinder {
         for (ModInfo mod : RiftLoader.instance.getMods()) {
             if (mod.id.equals("rift")) continue;
             try {
-                FileSystemUtil.FileSystemDelegate delegate = FileSystemUtil.getJarFileSystem(mod.source.toPath().toAbsolutePath().normalize(), false);
-                FileSystem fs = delegate.get();
+                FileSystem fs = FileUtils.getJarFileSystem(mod.source.toPath().toAbsolutePath().normalize());
 
                 if (fs == null) {
                     throw new RuntimeException("Could not open JAR file " + mod.source + " for NIO reading!");
