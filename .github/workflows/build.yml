@@ -18,5 +18,7 @@ jobs:
           java-version: 17
       - name: Grant execute permission
         run: chmod +x ./gradlew
+      - name: Setup project
+        run: ./gradlew
       - name: Build with Gradle
         run: ./gradlew build
