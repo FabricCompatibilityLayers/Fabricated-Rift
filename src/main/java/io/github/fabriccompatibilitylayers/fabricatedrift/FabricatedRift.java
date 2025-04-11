@@ -100,5 +100,73 @@ public class FabricatedRift implements ModRemapper {
                         null
                 )
         );
+
+        // Reflection Remappers
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "getDeclaredMethod",
+                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "getDeclaredMethod",
+                        "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;",
+                        true
+                )
+        );
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "getDeclaredField",
+                "(Ljava/lang/String;)Ljava/lang/reflect/Field;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "getDeclaredField",
+                        "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/reflect/Field;",
+                        true
+                )
+        );
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "getMethod",
+                "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "getMethod",
+                        "(Ljava/lang/Class;Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;",
+                        true
+                )
+        );
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "getField",
+                "(Ljava/lang/String;)Ljava/lang/reflect/Field;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "getField",
+                        "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/reflect/Field;",
+                        true
+                )
+        );
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "forName",
+                "(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "forName",
+                        "(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;",
+                        true
+                )
+        );
+        visitorInfos.registerMethodInvocation(
+                "java/lang/Class",
+                "forName",
+                "(Ljava/lang/String;)Ljava/lang/Class;",
+                VisitorInfos.classMember(
+                        "io/github/fabriccompatibilitylayers/fabricatedrift/reflection/RemapAwareClass",
+                        "forName",
+                        "(Ljava/lang/String;)Ljava/lang/Class;",
+                        true
+                )
+        );
     }
 }
