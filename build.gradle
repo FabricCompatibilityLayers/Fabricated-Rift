@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'xyz.wagyourtail.unimined' version "1.3.9-SNAPSHOT"
+	id 'xyz.wagyourtail.unimined' version "1.4.1-SNAPSHOT"
 	id 'maven-publish'
 }
 
@@ -19,6 +19,8 @@ repositories {
 			includeGroup "maven.modrinth"
 		}
 	}
+	unimined.ornitheMaven()
+	unimined.quiltMaven()
 
 	maven {
 		name = "Jitpack"
@@ -26,17 +28,29 @@ repositories {
 	}
 }
 
+configurations {
+	ornitheImplementation
+}
+
 unimined.minecraft {
 	version project.minecraft_version
 
 	mappings {
+		calamus()
 		searge()
 		mcp(project.mcp_channel, "${project.mcp_version}-${project.minecraft_version}")
+
+		devFallbackNamespace("searge")
+		devNamespace("mcp")
 	}
 
 	legacyFabric {
 		loader project.loader_version
 		accessWidener = file("src/main/resources/fabricated-rift.accesswidener")
+	}
+
+	mods.remap(configurations.ornitheImplementation) {
+		namespace("calamus")
 	}
 }
 
@@ -46,10 +60,24 @@ dependencies {
 	implementation("com.github.thecatcore.CursedMixinExtensions:fabric:1.0.0") {
 		exclude(module: 'fabric-loader')
 	}
-	implementation("com.github.thecatcore:WFVAIO:1.1.0") {
+	implementation("com.github.thecatcore:WFVAIO:1.2.1") {
 		exclude(module: 'fabric-loader')
 	}
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
+
+	if (file(".gradle/unimined/local/modTransform/core-0.6.0-mapped-mcp.jar").exists()) {
+		fabricApi.osl("1.13.2", "0.16.3").forEach {
+			modImplementation(ornitheImplementation(it))
+		}
+
+		modImplementation(ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2"))
+	} else {
+		fabricApi.osl("1.13.2", "0.16.3").forEach {
+			ornitheImplementation(it)
+		}
+
+		ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
+	}
 }
 
 processResources {

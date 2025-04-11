@@ -1,6 +1,7 @@
 package org.dimdev.riftloader;
 
 import com.google.gson.JsonParseException;
+import io.github.fabriccompatibilitylayers.fabricatedrift.CompatibilityHelper;
 import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.CacheHandler;
 import io.github.fabriccompatibiltylayers.modremappingapi.api.v1.ClassTransformer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -133,6 +134,8 @@ public class RiftLoader {
             }
         }
 
+        CompatibilityHelper.registerBuiltinMods(modInfoMap);
+
         log.info("Loaded " + modInfoMap.size() + " mods");
     }
 
@@ -201,6 +204,8 @@ public class RiftLoader {
         }
 
         log.info("Done initializing mods");
+
+        CompatibilityHelper.addToModList(this.getMods());
     }
 
     private static void addURLToClasspath(URL url) throws URISyntaxException {

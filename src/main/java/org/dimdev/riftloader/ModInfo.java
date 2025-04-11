@@ -2,6 +2,8 @@ package org.dimdev.riftloader;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -73,6 +75,28 @@ public class ModInfo {
                     }
                 }
 
+                if (object.has("version")) {
+                    modInfo.version = object.get("version").getAsString();
+                } else {
+                    modInfo.version = "Unidentified";
+                }
+
+                if (object.has("url")) {
+                    modInfo.url = object.get("url").getAsString();
+                } else {
+                    modInfo.url = "Unidentified";
+                }
+
+                if (object.has("description")) {
+                    modInfo.description = object.get("description").getAsString();
+                } else {
+                    modInfo.description = "A mod for Rift.";
+                }
+
+                if (object.has("icon_file")) {
+                    modInfo.iconPath = object.get("icon_file").getAsString();
+                }
+
                 return modInfo;
             })
             .create();
@@ -93,4 +117,8 @@ public class ModInfo {
     public String name;
     public List<String> authors = new ArrayList<>();
     public List<Listener> listeners = new ArrayList<>();
+    @ApiStatus.Internal
+    public String version, url, description;
+    @ApiStatus.Internal
+    public @Nullable String iconPath;
 }
