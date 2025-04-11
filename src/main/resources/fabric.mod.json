@@ -8,11 +8,11 @@
     "Cat Core"
   ],
   "contact": {
-    "homepage": "https://legacyfabric.net/",
-    "sources": "https://github.com/Legacy-Fabric/fabric-example-mod"
+    "homepage": "https://modrinth.com/mod/fabricated-rift",
+    "sources": "https://github.com/FabricCompatibilityLayers/Fabricated-Rift"
   },
   "license": "MIT",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/fabricated-rift/icon.png",
   "environment": "*",
   "entrypoints": {
     "mod-remapper-api:modremapper_v2": [
@@ -31,7 +31,7 @@
     "mixins.fabricated-rift.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.19",
+    "fabricloader": ">=0.15.10",
     "minecraft": "${mc_version}",
     "mod-remapping-api": ">=${mrapi_version}"
   }
