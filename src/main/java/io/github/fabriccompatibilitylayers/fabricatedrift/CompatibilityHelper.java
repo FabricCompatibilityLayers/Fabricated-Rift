@@ -1,6 +1,9 @@
 package io.github.fabriccompatibilitylayers.fabricatedrift;
 
 import io.github.fabriccompatibilitylayers.fabricatedrift.modmenu.ModMenuUtils;
+import io.github.fabriccompatibilitylayers.fabricatedrift.optifabric.OptifabricUtils;
+import me.modmuss50.optifabric.mod.OptifabricSetup;
+import me.modmuss50.optifabric.mod.OptifineVersion;
 import net.fabricmc.loader.api.FabricLoader;
 import org.dimdev.riftloader.ModInfo;
 
@@ -26,6 +29,10 @@ public class CompatibilityHelper {
             info.source = modInfos.get("rift").source;
 
             modInfos.put(info.id, info);
+        }
+
+        if (FabricLoader.getInstance().isModLoaded("optifabric")) {
+            OptifabricUtils.registerBuiltinMods(modInfos);
         }
     }
 }

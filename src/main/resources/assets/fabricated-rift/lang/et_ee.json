@@ -1,3 +1,4 @@
 {
-  "modmenu.descriptionTranslation.rift_rift": "Rift on kergekaaluline modifitseerimise API, teek ja modilaadija Minecraft 1.13-le. Rifti põhieesmärk on luua Minecraftile modulaarsem ja kergem modifitseerimise API. Rift ei ole mõeldud Forge'ga konkureerima või seda asendama, pigem teeb seda Rift koos valikuliste kogukonna poolt loodud teegi modidega."
+  "modmenu.descriptionTranslation.rift_rift": "Rift on kergekaaluline modifitseerimise API, teek ja modilaadija Minecraft 1.13-le. Rifti põhieesmärk on luua Minecraftile modulaarsem ja kergem modifitseerimise API. Rift ei ole mõeldud Forge'ga konkureerima või seda asendama, pigem teeb seda Rift koos valikuliste kogukonna poolt loodud teegi modidega.",
+  "modmenu.descriptionTranslation.rift_optifine": "OptiFine on Minecrafti optimeerimise moodul.\nSee võimaldab Minecraftil kiiremini töötada ning parem välja näha koos HD-tekstuuride toe ja paljude seadistusvõimalustega."
 }

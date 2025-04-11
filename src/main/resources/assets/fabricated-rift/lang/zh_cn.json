@@ -1,3 +1,4 @@
 {
-  "modmenu.descriptionTranslation.rift_rift": "Rift是Minecraft 1.13的一个轻量级模块编程接口、数据库和模块加载器。Rift的主要目标是为Minecraft制作更加模块化和轻量级的模块编程接口。Rift并不打算与Forge竞争或取代Forge，而是Rift和一组由小区制作而且可以选择的模块数据库。"
+  "modmenu.descriptionTranslation.rift_rift": "Rift是Minecraft 1.13的一个轻量级模块编程接口、数据库和模块加载器。Rift的主要目标是为Minecraft制作更加模块化和轻量级的模块编程接口。Rift并不打算与Forge竞争或取代Forge，而是Rift和一组由小区制作而且可以选择的模块数据库。",
+  "modmenu.descriptionTranslation.rift_optifine": "OptiFine是一个Minecraft的优化模块。\n通过全面支持高清材质／纹理和许多配置选项，它可以让Minecraft运行得更快，而且看起来更好。"
 }

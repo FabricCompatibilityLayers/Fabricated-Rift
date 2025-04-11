@@ -11,6 +11,15 @@ base {
 	archivesName = project.archives_base_name
 }
 
+sourceSets {
+	shim {
+		java {}
+	}
+	main {
+		compileClasspath += sourceSets.shim.output
+	}
+}
+
 repositories {
 	maven {
 		name = "Modrinth"
@@ -30,6 +39,19 @@ repositories {
 
 configurations {
 	ornitheImplementation
+}
+
+unimined.minecraft(sourceSets.shim) {
+	version project.minecraft_version
+
+	mappings {
+		searge()
+		mcp(project.mcp_channel, "${project.mcp_version}-${project.minecraft_version}")
+	}
+
+	legacyFabric {
+		loader project.loader_version
+	}
 }
 
 unimined.minecraft {
@@ -57,6 +79,7 @@ unimined.minecraft {
 dependencies {
 	modImplementation("maven.modrinth:mod-remapping-api:${project.mod_remapping_api}")
 	modImplementation("maven.modrinth:spasm:0.2")
+	modImplementation("maven.modrinth:legacy-optifabric:2.3.4+1.3-1.13.2")
 	implementation("com.github.thecatcore.CursedMixinExtensions:fabric:1.0.0") {
 		exclude(module: 'fabric-loader')
 	}

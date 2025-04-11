@@ -1,3 +1,4 @@
 {
-  "modmenu.descriptionTranslation.rift_rift": "Rift是Minecraft 1.13的一個輕量級模組編程介面、資料庫和模組載入器。Rift的主要目標是為Minecraft製作更加模塊化和輕量級的模組編程介面。Rift並不打算與Forge競爭或取代Forge，而是Rift和一組由社區製作而且可以選擇的模組資料庫。"
+  "modmenu.descriptionTranslation.rift_rift": "Rift是Minecraft 1.13的一個輕量級模組編程介面、資料庫和模組載入器。Rift的主要目標是為Minecraft製作更加模塊化和輕量級的模組編程介面。Rift並不打算與Forge競爭或取代Forge，而是Rift和一組由社區製作而且可以選擇的模組資料庫。",
+  "modmenu.descriptionTranslation.rift_optifine": "OptiFine是一個Minecraft的優化模組。\n通過全面支持高清材質／紋理和許多配置選項，它可以讓Minecraft運行得更快，而且看起來更好。"
 }
