@@ -25,7 +25,7 @@ public class Rift implements InitializationListener {
     	public static boolean hasOptifine = false;
 
     	private static boolean isObf() {
-    		return FabricLoader.getInstance().isDevelopmentEnvironment();
+    		return !FabricLoader.getInstance().isDevelopmentEnvironment();
     	}
 
 		@Override
