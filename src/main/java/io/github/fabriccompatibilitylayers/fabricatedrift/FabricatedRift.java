@@ -46,7 +46,7 @@ public class FabricatedRift implements ModRemapper {
 
     @Override
     public MappingsConfig getMappingsConfig() {
-        return MappingsConfig.defaultConfig();
+        return new RiftMappingsConfig();
     }
 
     @Override

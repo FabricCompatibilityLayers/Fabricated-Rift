@@ -1,5 +1,7 @@
 package io.github.fabriccompatibilitylayers.fabricatedrift;
 
+import fr.catcore.wfvaio.FabricVariants;
+import fr.catcore.wfvaio.WhichFabricVariantAmIOn;
 import io.github.fabriccompatibilitylayers.modremappingapi.api.v2.MappingsConfig;
 
 import java.util.Collections;
@@ -23,9 +25,11 @@ public class RiftMappingsConfig implements MappingsConfig {
         return Collections.emptyMap();
     }
 
+    private static final boolean isOrnithe = WhichFabricVariantAmIOn.getVariant() == FabricVariants.ORNITHE_V1 || WhichFabricVariantAmIOn.getVariant() == FabricVariants.ORNITHE_V2;
+
     @org.jetbrains.annotations.Nullable
     @Override
     public String getDefaultPackage() {
-        return "net/minecraft/";
+        return isOrnithe ? "net/minecraft/unmapped/" : "net/minecraft/";
     }
 }

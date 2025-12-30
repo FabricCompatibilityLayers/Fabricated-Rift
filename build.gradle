@@ -42,6 +42,28 @@ configurations {
 	implementation.extendsFrom ornitheImplementation
 }
 
+tasks.create("legacyFabricJar", Jar) {
+	archiveBaseName.set("${base.archivesName.get()}-legacy-fabric")
+	from { sourceSets.main.output }
+	from("LICENSE") {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+	from("./libs") {
+		into("libs")
+	}
+}
+
+tasks.create("ornitheJar", Jar) {
+	archiveBaseName.set("${base.archivesName.get()}-ornithe")
+	from { sourceSets.main.output }
+	from("LICENSE") {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+	from("./libs") {
+		into("libs")
+	}
+}
+
 unimined.minecraft(sourceSets.shim) {
 	version project.minecraft_version
 
@@ -74,6 +96,22 @@ unimined.minecraft {
 
 	mods.remap(configurations.ornitheImplementation) {
 		namespace("calamus")
+	}
+
+	defaultRemapJar = false // disable the default remapJar task
+
+	remap(legacyFabricJar) {
+		prodNamespace "legacyIntermediary" // set the namespace to remap to
+		mixinRemap {
+			disableRefmap() // like fabric-loom 1.6+
+		}
+	}
+
+	remap(ornitheJar) {
+		prodNamespace "calamus" // set the namespace to remap to
+		mixinRemap {
+			disableRefmap() // like fabric-loom 1.6+
+		}
 	}
 }
 
@@ -128,14 +166,7 @@ java {
 	withSourcesJar()
 }
 
-jar {
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}" }
-	}
-	from("./libs") {
-		into("libs")
-	}
-}
+tasks.build.dependsOn(remapLegacyFabricJar, remapOrnitheJar)
 
 // configure the maven publication
 publishing {
