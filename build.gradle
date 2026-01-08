@@ -18,6 +18,8 @@ sourceSets {
 	main {
 		compileClasspath += sourceSets.shim.output
 	}
+	legacyFabric
+	ornithe
 }
 
 repositories {
@@ -34,33 +36,6 @@ repositories {
 	maven {
 		name = "Jitpack"
 		url 'https://jitpack.io/'
-	}
-}
-
-configurations {
-	ornitheImplementation
-	implementation.extendsFrom ornitheImplementation
-}
-
-tasks.create("legacyFabricJar", Jar) {
-	archiveBaseName.set("${base.archivesName.get()}-legacy-fabric")
-	from { sourceSets.main.output }
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}" }
-	}
-	from("./libs") {
-		into("libs")
-	}
-}
-
-tasks.create("ornitheJar", Jar) {
-	archiveBaseName.set("${base.archivesName.get()}-ornithe")
-	from { sourceSets.main.output }
-	from("LICENSE") {
-		rename { "${it}_${base.archivesName.get()}" }
-	}
-	from("./libs") {
-		into("libs")
 	}
 }
 
@@ -94,25 +69,27 @@ unimined.minecraft {
 		accessWidener = file("src/main/resources/fabricated-rift.accesswidener")
 	}
 
-	mods.remap(configurations.ornitheImplementation) {
-		namespace("calamus")
+	defaultRemapJar = false
+}
+
+unimined.minecraft(sourceSets.legacyFabric) {
+	combineWith(sourceSets.main)
+
+	legacyFabric {
+		loader project.loader_version
 	}
 
-	defaultRemapJar = false // disable the default remapJar task
+	defaultRemapJar = true
+}
 
-	remap(legacyFabricJar) {
-		prodNamespace "legacyIntermediary" // set the namespace to remap to
-		mixinRemap {
-			disableRefmap() // like fabric-loom 1.6+
-		}
+unimined.minecraft(sourceSets.ornithe) {
+	combineWith(sourceSets.main)
+
+	ornitheFabric {
+		loader project.loader_version
 	}
 
-	remap(ornitheJar) {
-		prodNamespace "calamus" // set the namespace to remap to
-		mixinRemap {
-			disableRefmap() // like fabric-loom 1.6+
-		}
-	}
+	defaultRemapJar = true
 }
 
 dependencies {
@@ -128,10 +105,10 @@ dependencies {
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
 	fabricApi.osl("1.13.2", "0.16.3").forEach {
-		ornitheImplementation(it)
+		ornitheModImplementation(it)
 	}
 
-	ornitheImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
+	ornitheModImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
 }
 
 processResources {
@@ -166,7 +143,19 @@ java {
 	withSourcesJar()
 }
 
-tasks.build.dependsOn(remapLegacyFabricJar, remapOrnitheJar)
+tasks.withType(Jar).configureEach {
+	from("LICENSE") {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+	from("./libs") {
+		into("libs")
+	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+jar {
+	enabled = false
+}
 
 // configure the maven publication
 publishing {

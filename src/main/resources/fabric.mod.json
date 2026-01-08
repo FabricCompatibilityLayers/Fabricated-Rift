@@ -34,5 +34,6 @@
     "fabricloader": ">=0.15.10",
     "minecraft": "${mc_version}",
     "mod-remapping-api": ">=${mrapi_version}"
-  }
+  },
+  "accessWidener": "fabricated-rift.accesswidener"
 }
