@@ -39,6 +39,11 @@ repositories {
 	}
 }
 
+configurations {
+	riftImplementation
+	implementation.extendsFrom riftImplementation
+}
+
 unimined.minecraft(sourceSets.shim) {
 	version project.minecraft_version
 
@@ -56,7 +61,6 @@ unimined.minecraft {
 	version project.minecraft_version
 
 	mappings {
-		calamus()
 		searge()
 		mcp(project.mcp_channel, "${project.mcp_version}-${project.minecraft_version}")
 
@@ -67,6 +71,10 @@ unimined.minecraft {
 	legacyFabric {
 		loader project.loader_version
 		accessWidener = file("src/main/resources/fabricated-rift.accesswidener")
+	}
+
+	mods.remap(configurations.riftImplementation) {
+		namespace("official")
 	}
 
 	defaultRemapJar = false
@@ -104,11 +112,14 @@ dependencies {
 	}
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
+	// Ornithe Dependencies
 	fabricApi.osl("1.13.2", "0.16.3").forEach {
 		ornitheModImplementation(it)
 	}
-
 	ornitheModImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
+
+	// Rift mods fixes for Ornithe
+	ornitheImplementation("maven.modrinth:rei:VvjG778i")
 }
 
 processResources {

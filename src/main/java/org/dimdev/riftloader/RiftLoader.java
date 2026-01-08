@@ -15,6 +15,7 @@ import org.dimdev.riftloader.listener.Instantiator;
 import org.dimdev.utils.InstanceListMap;
 import org.dimdev.utils.InstanceMap;
 import org.dimdev.utils.ReflectionUtils;
+import org.spongepowered.asm.mixin.Mixins;
 
 import java.io.File;
 import java.io.IOException;
@@ -165,6 +166,8 @@ public class RiftLoader {
                 throw new RuntimeException(e);
             }
         }
+
+        Mixins.addConfiguration("mixins.fabricated-rift-mods.json");
 
         // Load the listener classes
         List<Listener> allListeners = new ArrayList<>();

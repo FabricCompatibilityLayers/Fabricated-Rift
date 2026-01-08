@@ -61,7 +61,6 @@ public class FabricatedRift implements ModRemapper {
 
     @Override
     public void afterAllRemappings() {
-
     }
 
     @Override
