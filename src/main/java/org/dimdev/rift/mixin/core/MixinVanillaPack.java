@@ -25,7 +25,7 @@ public class MixinVanillaPack {
      */
     @Nullable
     @Overwrite(constraints = "OPTIFINE(0-1)")
-    protected InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
+    public InputStream getInputStreamVanilla(ResourcePackType type, ResourceLocation location) {
         String pathString = type.getDirectoryName() + "/" + location.getNamespace() + "/" + location.getPath();
 
         if (basePath != null) {
