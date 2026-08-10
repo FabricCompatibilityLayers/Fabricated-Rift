@@ -11,5 +11,6 @@
 	"client": [
 		"client.MixinBlockFluidRenderer",
 		"client.MixinCustomColors"
-	]
+	],
+	"plugin": "net.ornithemc.conditionalmixin.mixin.ConditionalMixinPlugin"
 }

@@ -1,11 +1,15 @@
 package org.dimdev.rift.mixin.hook.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MusicTicker;
 import net.minecraft.client.resources.ResourcePackInfoClient;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackList;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.dimdev.rift.listener.client.KeybindHandler;
 import org.dimdev.rift.listener.client.AmbientMusicTypeProvider;
 import org.dimdev.rift.listener.client.ClientTickable;
@@ -16,26 +20,25 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
-    @Shadow @Final private ResourcePackList<ResourcePackInfoClient> resourcePackRepository;
     @Shadow @Final public Profiler profiler;
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V", ordinal = 1))
-    private void onAddResourcePacks(ResourcePackList<?> resourcePackList, IPackFinder minecraftPackFinder) {
-        resourcePackList.addPackFinder(minecraftPackFinder);
+    @WrapOperation(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V", ordinal = 1))
+    private void onAddResourcePacks(ResourcePackList<ResourcePackInfoClient> instance, IPackFinder packFinder, Operation<Void> original) {
+        original.call(instance, packFinder);
 
         for (ResourcePackFinderAdder resourcePackFinderAdder : RiftLoader.instance.getListeners(ResourcePackFinderAdder.class)) {
-            for (IPackFinder packFinder : resourcePackFinderAdder.getResourcePackFinders()) {
-                resourcePackRepository.addPackFinder(packFinder);
+            for (IPackFinder addedPackFinder : resourcePackFinderAdder.getResourcePackFinders()) {
+                original.call(instance, addedPackFinder);
             }
         }
     }
 
+    @Conditional(modAbsent = @Mod("osl-lifecycle-events"))
     @Inject(method = "runTick", at = @At("RETURN"))
     private void onTick(CallbackInfo ci) {
         profiler.startSection("mods");

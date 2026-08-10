@@ -2,6 +2,8 @@ package org.dimdev.rift.mixin.hook;
 
 import net.minecraft.block.Block;
 
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.dimdev.rift.listener.BlockAdder;
 import org.dimdev.riftloader.RiftLoader;
 
@@ -12,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Conditional(modAbsent = @Mod("osl-blocks"))
 @Mixin(Block.class)
 public abstract class MixinBlock {
     @Inject(method = "registerBlocks", at = @At(value = "FIELD", target = "Lnet/minecraft/util/registry/IRegistry;BLOCK:Lnet/minecraft/util/registry/IRegistry;", opcode = Opcodes.GETSTATIC, ordinal = 1))

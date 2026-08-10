@@ -12,5 +12,6 @@
     "client.MixinWaterFluid",
     "client.MixinLavaFluid",
     "client.MixinItemRenderer"
-  ]
+  ],
+  "plugin": "net.ornithemc.conditionalmixin.mixin.ConditionalMixinPlugin"
 }

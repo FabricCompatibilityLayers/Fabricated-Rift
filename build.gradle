@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'xyz.wagyourtail.unimined' version "1.4.2-SNAPSHOT"
+	id 'xyz.wagyourtail.unimined' version "1.4.20"
 	id 'maven-publish'
 }
 
@@ -23,20 +23,11 @@ sourceSets {
 }
 
 repositories {
-	maven {
-		name = "Modrinth"
-		url = "https://api.modrinth.com/maven"
-		content {
-			includeGroup "maven.modrinth"
-		}
-	}
+	unimined.modrinthMaven()
 	unimined.ornitheMaven()
 	unimined.quiltMaven()
-
-	maven {
-		name = "Jitpack"
-		url 'https://jitpack.io/'
-	}
+	unimined.curseMaven(false)
+	unimined.jitpack()
 }
 
 configurations {
@@ -93,6 +84,10 @@ unimined.minecraft(sourceSets.legacyFabric) {
 unimined.minecraft(sourceSets.ornithe) {
 	combineWith(sourceSets.main)
 
+	mappings {
+		ornitheGenVersion = 2
+	}
+
 	ornitheFabric {
 		loader project.loader_version
 	}
@@ -112,11 +107,20 @@ dependencies {
 	}
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
+	implementation("net.ornithemc:conditional-mixin:1.0.0-beta.2")
+
+	legacyFabricInclude("net.ornithemc:conditional-mixin:1.0.0-beta.2") {
+		transitive = false
+	}
+	ornitheInclude("net.ornithemc:conditional-mixin:1.0.0-beta.2") {
+		transitive = false
+	}
+
 	// Ornithe Dependencies
-	fabricApi.osl("1.13.2", "0.16.3").forEach {
+	fabricApi.osl(2, project.minecraft_version, project.osl_version).forEach {
 		ornitheModImplementation(it)
 	}
-	ornitheModImplementation("com.terraformersmc:modmenu:0.3.0+mc1.13.2")
+	ornitheModImplementation("com.terraformersmc:modmenu:0.4.0+mc1.13.2")
 
 	// Rift mods fixes for Ornithe
 	ornitheImplementation("maven.modrinth:rei:VvjG778i")
@@ -126,11 +130,15 @@ processResources {
 	inputs.property "version", project.version
 	inputs.property "mc_version", project.minecraft_version
 	inputs.property "mrapi_version", project.mod_remapping_api
+	inputs.property "loader_version", project.loader_version
+	inputs.property "osl_version", project.osl_version
 
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version,
 				"mc_version": rootProject.minecraft_version,
-				"mrapi_version": project.mod_remapping_api
+				"mrapi_version": project.mod_remapping_api,
+				"loader_version": project.loader_version,
+				"osl_version": project.osl_version
 	}
 }
 

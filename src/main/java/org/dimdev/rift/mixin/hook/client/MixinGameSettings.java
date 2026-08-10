@@ -2,6 +2,8 @@ package org.dimdev.rift.mixin.hook.client;
 
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.dimdev.rift.listener.client.KeyBindingAdder;
 import org.dimdev.riftloader.RiftLoader;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Conditional(modAbsent = @Mod("osl-keybinds"))
 @Mixin(GameSettings.class)
 public class MixinGameSettings {
     @Shadow public KeyBinding[] keyBindings;

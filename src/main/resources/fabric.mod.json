@@ -23,6 +23,12 @@
     ],
     "modmenu": [
       "io.github.fabriccompatibilitylayers.fabricatedrift.modmenu.FabricatedRiftModMenuCompat"
+    ],
+    "init": [
+      "io.github.fabriccompatibilitylayers.fabricatedrift.osl.FabricatedRiftOSL"
+    ],
+    "client-init": [
+      "io.github.fabriccompatibilitylayers.fabricatedrift.osl.ClientFabricatedRiftOSL"
     ]
   },
   "mixins": [
@@ -31,9 +37,12 @@
     "mixins.fabricated-rift.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.10",
+    "fabricloader": ">=${loader_version}",
     "minecraft": "${mc_version}",
     "mod-remapping-api": ">=${mrapi_version}"
+  },
+  "breaks": {
+    "osl": "<${osl_version}"
   },
   "accessWidener": "fabricated-rift.accesswidener"
 }

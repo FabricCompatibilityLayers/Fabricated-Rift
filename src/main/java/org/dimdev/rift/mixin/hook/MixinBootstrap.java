@@ -1,6 +1,8 @@
 package org.dimdev.rift.mixin.hook;
 
 import net.minecraft.init.Bootstrap;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.dimdev.rift.listener.BootstrapListener;
 import org.dimdev.rift.listener.DispenserBehaviorAdder;
 import org.dimdev.rift.listener.MinecraftStartListener;
@@ -19,6 +21,7 @@ public class MixinBootstrap {
         }
     }
 
+    @Conditional(modAbsent = @Mod("osl-lifecycle-events"))
     @Inject(method = "register", at = @At("HEAD"))
     private static void beforeBootstrapRegister(CallbackInfo ci) {
         for (MinecraftStartListener listener : RiftLoader.instance.getListeners(MinecraftStartListener.class)) {
@@ -26,6 +29,7 @@ public class MixinBootstrap {
         }
     }
 
+    @Conditional(modAbsent = @Mod("osl-lifecycle-events"))
     @Inject(method = "register", at = @At(value = "INVOKE", target = "Lnet/minecraft/init/Bootstrap;redirectOutputToLog()V"))
     private static void afterBootstrapRegister(CallbackInfo ci) {
         for (BootstrapListener listener : RiftLoader.instance.getListeners(BootstrapListener.class)) {

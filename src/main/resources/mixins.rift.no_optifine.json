@@ -10,5 +10,6 @@
 	],
 	"client": [
 		"client.MixinBlockFluidRenderer"
-	]
+	],
+	"plugin": "net.ornithemc.conditionalmixin.mixin.ConditionalMixinPlugin"
 }

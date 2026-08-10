@@ -49,5 +49,6 @@
     "client.MixinEntityPlayerSP",
     "client.MixinGameSettings",
     "client.MixinGuiIngame"
-  ]
+  ],
+  "plugin": "net.ornithemc.conditionalmixin.mixin.ConditionalMixinPlugin"
 }

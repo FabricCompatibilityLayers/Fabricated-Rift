@@ -1,5 +1,7 @@
 package org.dimdev.rift.mixin.hook;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.profiler.Profiler;
 import net.minecraft.resources.IPackFinder;
 import net.minecraft.resources.ResourcePackInfo;
@@ -15,6 +17,8 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSavedDataStorage;
 
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.dimdev.rift.listener.DataPackFinderAdder;
 import org.dimdev.rift.listener.ServerTickable;
 import org.dimdev.riftloader.RiftLoader;
@@ -39,15 +43,17 @@ public abstract class MixinMinecraftServer {
     @Shadow public abstract GameType getGameType();
     @Shadow public abstract boolean isSinglePlayer();
 
-    @Inject(method = "loadDataPacks(Ljava/io/File;Lnet/minecraft/world/storage/WorldInfo;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;reloadPacksFromFinders()V"))
-    private void afterAddVanillaPackFinder(File serverDirectory, WorldInfo worldInfo, CallbackInfo ci) {
+    @WrapOperation(method = "loadDataPacks(Ljava/io/File;Lnet/minecraft/world/storage/WorldInfo;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourcePackList;addPackFinder(Lnet/minecraft/resources/IPackFinder;)V"))
+    private void afterAddVanillaPackFinder(ResourcePackList<ResourcePackInfo> instance, IPackFinder packFinder, Operation<Void> original) {
+        original.call(instance, packFinder);
         for (DataPackFinderAdder resourcePackFinderAdder : RiftLoader.instance.getListeners(DataPackFinderAdder.class)) {
-            for (IPackFinder packFinder : resourcePackFinderAdder.getDataPackFinders()) {
-                resourcePacks.addPackFinder(packFinder);
+            for (IPackFinder addedPackFinder : resourcePackFinderAdder.getDataPackFinders()) {
+                original.call(instance, addedPackFinder);
             }
         }
     }
 
+    @Conditional(modAbsent = @Mod("osl-lifecycle-events"))
     @Inject(method = "tick", at = @At(value = "RETURN"))
     private void onTick(CallbackInfo ci) {
         profiler.startSection("mods");
