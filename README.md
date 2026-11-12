@@ -1,140 +1,44 @@
-# Rift
-Rift is a lightweight modding API, library, and mod loader for Minecraft 1.13. The main objective of Rift is to make a more modular and lightweight modding API for Minecraft. Find out more on [CurseForge](https://minecraft.curseforge.com/projects/rift).
+# Fabricated Rift
+Fabricated Rift is a port of the [Rift](https://github.com/Chocohead/Rift) mod loader for Minecraft 1.13.2 that runs as a regular mod on [Fabric Loader](https://github.com/FabricMC/fabric-loader). It lets you play Rift mods alongside Fabric mods, using either [Ornithe](https://ornithemc.net/) or [Legacy Fabric](https://legacyfabric.net/).
 
-This fork contains the Minecraft 1.13.1 port (in the `newerer` branch) and the Minecraft 1.13.2 port (in the `newerest` branch). For Minecraft 1.13 see [**here**](https://github.com/DimensionalDevelopment/Rift). Pull requests should go to either of those branches depending on Minecraft version, `jitpack` is for temporary publishing until everything is pulled into the main Rift repo.
+Rift itself is a lightweight modding API, library and mod loader for Minecraft 1.13. Its main objective was to provide a more modular and lightweight modding API. Rift originally shipped as a LaunchWrapper tweaker. This project modifies it so it runs inside Fabric Loader instead. Rift mods are discovered and remapped at launch through [Mod Remapping API](https://modrinth.com/mod/mod-remapping-api), so they work unchanged.
 
+Fabricated Rift is the recommended way to run Rift mods today.
 
-## Playing on Minecraft 1.13.2
-If you have any problems or find any incompatibilities using this please do report them [here](https://github.com/Chocohead/Rift/issues). Previous problems with Optifine and water/connected textures appear to have been fixed so there is nothing known to cause trouble at the moment.
+## Playing
+### Requirements
+* Minecraft 1.13.2
+* Fabric Loader 0.18.3 or newer, installed through either:
+  * [Ornithe](https://ornithemc.net/) (Gen2), or
+  * [Legacy Fabric](https://legacyfabric.net/)
+* [Mod Remapping API](https://modrinth.com/mod/mod-remapping-api)
 
-### Using the Minecraft Launcher
-The current version can be downloaded from [**here**](https://jitpack.io/com/github/Chocohead/Rift/jitpack-SNAPSHOT/Rift-jitpack-SNAPSHOT.jar) and installed just like the previous versions of Rift. Mods designed for 1.13 currently aren't supported but might be in future.
+### Installing
+1. Create a Minecraft 1.13.2 instance with Fabric Loader, using the Ornithe or Legacy Fabric installer (or your launcher's built-in support for either).
+2. Download Fabricated Rift from [Modrinth](https://modrinth.com/mod/fabricated-rift) and put it in the `mods` folder along with Mod Remapping API.
+3. Put your Rift mods in the same `mods` folder. They are detected by their `riftmod.json` and loaded automatically.
+4. Launch the game.
 
-### Using MultiMC
-Modified original documentation from the [Rift Wiki](https://github.com/DimensionalDevelopment/Rift/wiki/Installing-Rift-in-a-MultiMC-instance#alternate-method)
+### Optional compatibility
+* **Ornithe Standard Libraries (OSL):** supported on Ornithe. Version 0.23.0 or newer is required if installed.
+* **Mod Menu:** when installed, Rift mods appear in its mod list and their config screens are reachable from there (this replaces Rift Mod List).
+* **OptiFine:** supported through [Legacy OptiFabric](https://modrinth.com/mod/legacy-optifabric).
 
-1. Make a new instance in MultiMC with with the wanted version of Minecraft—in our case, Minecraft 1.13.2
-1. Click `Edit Instance`—it should open the `Version` page of the instance.
-1. Click `Add Empty`.
-1. Set uid to `org.dimdev.rift` and name to `Rift`.
-1. Select the newly created component and click `Edit`—this should open the file in a text editor.
-1. Edit the JSON to look like the example below, then save the file.
-1. Launch the instance from MultiMC.
+If you run into problems or incompatibilities, please report them on the [issue tracker](https://github.com/FabricCompatibilityLayers/Fabricated-Rift/issues).
 
-The version that I selected for the example is the one provided alongside VoxelMap [here](https://minecraft.curseforge.com/projects/voxelmap)
+## Developing Rift mods
+You can still make Rift mods. The original Forge Gradle-based toolchain is no longer maintained, so use [Unimined](https://github.com/unimined/unimined) instead, which supports Rift as a target platform.
 
-If the example doesn't fit the Rift version exactly, change the version. For example, replace all occurrences of `2d8bb9bd56` with `d6893ec777`.
+### API changes between Rift 1.13 and 1.13.2
+Obfuscated mappings changed between versions, so any access transformers need updating. A tool for doing this automatically is available [here](https://github.com/Chocohead/Rift/blob/newerest/src/debug/java/com/chocohead/rift/AccessTransformerUpdater.java). It can also be used to add access transformer entries more easily, as it goes straight from MCP names to the matching Notch names.
 
-You can use the version page to check the file for errors—obvious mistakes will show up in the `Version` page as soon as you click the `Refresh` button.
+Rift's API also changed to account for changes made in Minecraft 1.13.1:
+* The deprecated `CustomPayloadHandler` has been removed in favour of `MessageAdder`.
+* `DimensionTypeAdder` no longer expects a set of `DimensionType`s. Because `DimensionType` is no longer an enum, it is now a callback for registering them directly, with a utility method `addDimensionType` for this purpose.
+* `ClientTickable#tick` now provides the `Minecraft` client instance directly, matching `ServerTickable#tick` providing `MinecraftServer`.
 
-If the JSON file doesn't open in a text editor, make sure your operating system is set up to open `.json` files in one first.
+Many MCP method names changed too, but most (if not all) are obvious enough not to list here.
 
-#### Example MultiMC Json
-
-```json
-{
-    "+tweakers": [
-        "org.dimdev.riftloader.launch.RiftLoaderClientTweaker"
-    ],
-    "formatVersion": 1,
-    "+libraries": [
-        {
-            "name": "com.github.Chocohead:rift:2d8bb9bd56",
-            "url": "https://jitpack.io/"
-        },
-        {
-            "name": "org.dimdev:mixin:0.7.11-SNAPSHOT",
-            "url": "https://www.dimdev.org/maven/"
-        },
-        {
-            "name": "org.ow2.asm:asm:6.2",
-            "url": "http://repo1.maven.org/maven2/"
-        },
-        {
-            "name": "org.ow2.asm:asm-commons:6.2",
-            "url": "http://repo1.maven.org/maven2/"
-        },
-        {
-            "name": "org.ow2.asm:asm-tree:6.2",
-            "url": "http://repo1.maven.org/maven2/"
-        },
-        {
-            "name": "net.minecraft:launchwrapper:1.12"
-        }
-    ],
-    "mainClass": "net.minecraft.launchwrapper.Launch",
-    "name": "Rift",
-    "releaseTime": "2018-07-18T15:11:46+00:00",
-    "requires": [
-        {
-            "equals": "1.13.2",
-            "uid": "net.minecraft"
-        }
-    ],
-    "uid": "org.dimdev.rift",
-    "version": "1.0.4-2d8bb9bd56"
-}
-```
-
-## Modding on Minecraft 1.13.2
-The fork of Forge Gradle 2 used for 1.13 has been improved for 1.13.2 so `setupDecompWorkspace` is now supported and is strongly encouraged to be used. Access transformers which would have otherwise silently failed will now explicitly crash so they can be fixed, which is helpful for updating. The locations of all found transformers can be found by running `setupDecompWorkspace`/`setupDevWorkspace` with `--info` and looking immediately after where the access transformer task is applied. Further improvements can be suggested [**here**](https://github.com/Chocohead/ForgeGradle/issues).
-
-Any suggestions for Rift itself can be made as issues [here](https://github.com/Chocohead/Rift/issues), or pull requested directly. Feel free to join the [Discord server](https://discord.gg/f27hdrM) if you want to talk about stuff first or have any other questions.
-
-
-### Setting up
-For a bare bones setup which is ready to be tinkered with, see the [**Rift MDK**](https://github.com/DimensionalDevelopment/Rift-MDK/tree/1.13.2) ([download](https://github.com/DimensionalDevelopment/Rift-MDK/archive/1.13.2.zip)).
-
-If you want to start from scratch, use this `build.gradle` in favour of the [Rift wiki's](https://github.com/DimensionalDevelopment/Rift/wiki/Making-mods-with-Rift#mod-structure), otherwise the information provided there is still accurate.
-```groovy
-buildscript {
-	repositories {
-		mavenCentral()
-		maven { url 'https://www.jitpack.io' }
-		maven { url 'https://files.minecraftforge.net/maven' }
-	}
-	dependencies {
-		classpath 'com.github.Chocohead:ForgeGradle:moderniser-SNAPSHOT'
-	}
-}
-
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-apply plugin: 'java'
-
-group 'com.example'
-version '1.0.0'
-archivesBaseName = 'exampleMod'
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-	mavenCentral()
-	maven { url 'https://www.dimdev.org/maven/' }
-	maven { url 'https://www.jitpack.io' }
-	maven { url 'http://repo.strezz.org/artifactory/list/Strezz-Central' }
-}
-
-dependencies {
-	implementation 'com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev'
-}
-
-minecraft {
-	version = '1.13.2'
-	mappings = 'snapshot_20181130'
-	runDir = 'run'
-	tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
-}
-```
-Remember to change the `group` and `archivesBaseName` for the mod you're making before publishing.
-
-
-### Changes between Rift 1.13 and 1.13.2
-Obviously the obfuscated mappings have changed so any access transformers will need to be updated. There is the beginnings of a tool provided for automatically doing this [here](https://github.com/Chocohead/Rift/blob/newerest/src/debug/java/com/chocohead/rift/AccessTransformerUpdater.java). The same tool can also be used for more easily adding access transformer entries as it can go straight from MCP name to matching Notch names.
-
-There have also been a few API changes within Rift to account for changes made in Minecraft 1.13.1:
-* The deprecated `CustomPayloadHandler` has been removed in favour of using `MessageAdder`
-* `DimensionTypeAdder` no longer expects a set of `DimensionType`s but is a callback for registering them directly now `DimensionType` is not an enum. It provides a utility method `addDimensionType` for this purpose.
-* `ClientTickable#tick` now provides the `Minecraft` client instance directly to match `ServerTickable#tick` providing `MinecraftServer`
-
-There's been many MCP method name changes too but most (if not all) are obvious enough to not need listing here.
+## Credits
+* [Rift](https://github.com/DimensionalDevelopment/Rift) by Runemoro and the DimDev team.
+* The [1.13.1 and 1.13.2 ports of Rift](https://github.com/Chocohead/Rift) by Chocohead, which this project is based on.
