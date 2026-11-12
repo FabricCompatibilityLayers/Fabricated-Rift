@@ -107,12 +107,12 @@ dependencies {
 	}
 	implementation("net.legacyfabric.legacy-fabric-api:legacy-fabric-logger-api-v1:1.0.4+common+ae4aa0d092")
 
-	implementation("net.ornithemc:conditional-mixin:1.0.0-beta.2")
+	implementation("net.ornithemc:conditional-mixin:1.0.0")
 
-	legacyFabricInclude("net.ornithemc:conditional-mixin:1.0.0-beta.2") {
+	legacyFabricInclude("net.ornithemc:conditional-mixin:1.0.0") {
 		transitive = false
 	}
-	ornitheInclude("net.ornithemc:conditional-mixin:1.0.0-beta.2") {
+	ornitheInclude("net.ornithemc:conditional-mixin:1.0.0") {
 		transitive = false
 	}
 
@@ -120,7 +120,7 @@ dependencies {
 	fabricApi.osl(2, project.minecraft_version, project.osl_version).forEach {
 		ornitheModImplementation(it)
 	}
-	ornitheModImplementation("com.terraformersmc:modmenu:0.4.0+mc1.13.2")
+	ornitheModImplementation("com.terraformersmc:modmenu:0.5.0+mc1.13.2")
 
 	// Rift mods fixes for Ornithe
 	ornitheImplementation("maven.modrinth:rei:VvjG778i")

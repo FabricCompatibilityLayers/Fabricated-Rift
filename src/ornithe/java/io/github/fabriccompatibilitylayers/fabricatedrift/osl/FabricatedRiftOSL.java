@@ -1,6 +1,9 @@
 package io.github.fabriccompatibilitylayers.fabricatedrift.osl;
 
+import net.ornithemc.osl.biomes.api.BiomeEvents;
+import net.ornithemc.osl.blockentities.api.BlockEntityEvents;
 import net.ornithemc.osl.blocks.api.BlockEvents;
+import net.ornithemc.osl.entities.api.EntityEvents;
 import net.ornithemc.osl.entrypoints.api.ModInitializer;
 import net.ornithemc.osl.items.api.ItemEvents;
 import net.ornithemc.osl.lifecycle.api.LifecycleEvents;
@@ -32,6 +35,24 @@ public class FabricatedRiftOSL implements ModInitializer {
         ItemEvents.REGISTER_ITEMS.register(() -> {
             for (ItemAdder itemAdder : RiftLoader.instance.getListeners(ItemAdder.class)) {
                 itemAdder.registerItems();
+            }
+        });
+
+        BiomeEvents.REGISTER_BIOMES.register(() -> {
+            for (BiomeAdder biomeAdder : RiftLoader.instance.getListeners(BiomeAdder.class)) {
+                biomeAdder.registerBiomes();
+            }
+        });
+
+        BlockEntityEvents.REGISTER_BLOCK_ENTITY_TYPES.register(() -> {
+            for (TileEntityTypeAdder entityTypeAdder : RiftLoader.instance.getListeners(TileEntityTypeAdder.class)) {
+                entityTypeAdder.registerTileEntityTypes();
+            }
+        });
+
+        EntityEvents.REGISTER_ENTITY_TYPES.register(() -> {
+            for (EntityTypeAdder entityTypeAdder : RiftLoader.instance.getListeners(EntityTypeAdder.class)) {
+                entityTypeAdder.registerEntityTypes();
             }
         });
 

@@ -4,11 +4,13 @@
   "compatibilityLevel": "JAVA_8",
   "package": "io.github.fabriccompatibilitylayers.fabricatedrift.mixin",
   "mixins": [
+    "osl.BiomeRegistryImplMixin"
   ],
   "client": [
     "modmenu.FabricIconHandlerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "plugin": "net.ornithemc.conditionalmixin.mixin.ConditionalMixinPlugin"
 }

@@ -4,9 +4,11 @@ import com.google.gson.*;
 import me.shedaniel.rei.client.ConfigManagerImpl;
 import me.shedaniel.rei.gui.config.RecipeScreenType;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+@Pseudo
 @Mixin(ConfigManagerImpl.class)
 public class ConfigManagerImplMixin {
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/google/gson/GsonBuilder;create()Lcom/google/gson/Gson;"))

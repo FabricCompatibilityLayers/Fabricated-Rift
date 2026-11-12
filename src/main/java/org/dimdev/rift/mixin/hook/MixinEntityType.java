@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.TypeReferences;
 import net.minecraft.world.World;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.rift.Rift;
@@ -16,12 +18,20 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.Function;
 
 @Mixin(EntityType.class)
 public abstract class MixinEntityType {
-    static {
+    @Conditional(modAbsent = @Mod("osl-entities"))
+    @Inject(
+            method = {"<clinit>"},
+            at = {@At("TAIL")}
+    )
+    private static void rift$entities$registerEntityTypes(CallbackInfo ci) {
         for (EntityTypeAdder entityTypeAdder : RiftLoader.instance.getListeners(EntityTypeAdder.class)) {
             entityTypeAdder.registerEntityTypes();
         }

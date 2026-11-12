@@ -4,12 +4,15 @@ import com.terraformersmc.modmenu.util.mod.fabric.FabricIconHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.nio.file.Path;
 import java.util.Map;
 
+@Conditional(modLoaded = @Mod("modmenu"))
 @Environment(EnvType.CLIENT)
 @Mixin(value = FabricIconHandler.class, remap = false)
 public interface FabricIconHandlerAccessor {

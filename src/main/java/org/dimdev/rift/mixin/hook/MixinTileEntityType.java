@@ -8,6 +8,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.datafix.DataFixesManager;
 import net.minecraft.util.datafix.TypeReferences;
 import net.minecraft.util.registry.IRegistry;
+import net.ornithemc.conditionalmixin.annotations.Conditional;
+import net.ornithemc.conditionalmixin.annotations.Mod;
 import org.apache.logging.log4j.Logger;
 import org.dimdev.rift.Rift;
 import org.dimdev.rift.listener.TileEntityTypeAdder;
@@ -44,6 +46,7 @@ public abstract class MixinTileEntityType {
         return tileEntityType;
     }
 
+    @Conditional(modAbsent = @Mod("osl-blockentities"))
     @Inject(method = "<clinit>", at = @At("RETURN"))
     private static void onRegisterTileEntityTypes(CallbackInfo ci) {
         for (TileEntityTypeAdder entityTypeAdder : RiftLoader.instance.getListeners(TileEntityTypeAdder.class)) {
